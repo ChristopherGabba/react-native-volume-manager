@@ -45,20 +45,6 @@ export default function App() {
     VolumeManager.showNativeVolumeUI({ enabled: !hideUI });
   }, [hideUI]);
 
-  useEffect(()=>{
-    try {
-      VolumeManager.configureAVAudioSession({
-        category: AVAudioSessionCategory.PlayAndRecord,
-        mode: AVAudioSessionMode.VideoRecording,
-        policy: AVAudioSessionRouteSharingPolicy.Default,
-        options: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.AllowBluetooth],
-      })
-    } catch(error) {
-      console.log(error)
-    }
-
-  },[])
-
   useEffect(() => {
     VolumeManager.getVolume().then((result) => {
       setReportedSystemVolume(result.volume);
