@@ -28,33 +28,139 @@ export type RingMuteSwitchEventCallback = (
  */
 export type setCheckIntervalType = (newInterval: number) => void;
 
-/**
- * Categories of AV Audio sessions.
- * @export
- */
-export type AVAudioSessionCategory =
-  | 'Ambient'
-  | 'SoloAmbient'
-  | 'Playback'
-  | 'Record'
-  | 'PlayAndRecord'
-  | 'AudioProcessing'
-  | 'MultiRoute'
-  | 'Alarm';
+export enum AVAudioSessionCategory {
+  /**
+   * This category is also appropriate for “play-along” apps, such as a virtual piano that a user plays while the Music app is playing. When you use this category, audio from other apps mixes with your audio. Screen locking and the Silent switch (on iPhone, the Ring/Silent switch) silence your audio.
+   */
+  Ambient = 'Ambient',
+  /**
+   * Your audio is silenced by screen locking and by the Silent switch (called the Ring/Silent switch on iPhone).
+   *
+   * By default, using this category implies that your app’s audio is nonmixable—activating your session will interrupt any other audio sessions which are also nonmixable. To allow mixing, use the ambient category instead.
+   */
+  SoloAmbient = 'SoloAmbient',
+  /**
+   * When using this category, your app audio continues with the Silent switch set to silent or when the screen locks. (The switch is called the Ring/Silent switch on iPhone.) To continue playing audio when your app transitions to the background (for example, when the screen locks), add the audio value to the UIBackgroundModes key in your information property list file.
+   *
+   * By default, using this category implies that your app’s audio is nonmixable—activating your session will interrupt any other audio sessions which are also nonmixable. To allow mixing for this category, use the mixWithOthers option.
+   */
+  Playback = 'Playback',
+  /**
+   * Your audio continues with the Silent switch set to silent and with the screen locked. (The switch is called the Ring/Silent switch on iPhone.) To continue playing audio when your app transitions to the background (for example, when the screen locks), add the audio value to the UIBackgroundModes key in your information property list file.
+   * This category is appropriate for simultaneous recording and playback, and also for apps that record and play back, but not simultaneously.
+   * By default, using this category implies that your app’s audio is nonmixable—activating your session will interrupt any other audio sessions which are also nonmixable. To allow mixing for this category, use the mixWithOthers option.
+   *
+   * The user must grant permission for audio recording.
+   *
+   * This category supports the mirrored version of Airplay. However, AirPlay mirroring will be disabled if the AVAudioSessionModeVoiceChat mode is used with this category.
+   */
+  PlayAndRecord = 'PlayAndRecord',
+  /**
+   * This category has the effect of silencing virtually all output on the system, for as long as the session is active. Unless you need to prevent any unexpected sounds from being played, use playAndRecord instead.
+   * To continue recording audio when your app transitions to the background (for example, when the screen locks), add the audio value to the UIBackgroundModes key in your information property list file.
+   *
+   * The user must grant permission for audio recording.
+   */
+  Record = 'Record',
+  /**
+   * @deprecated
+   * This category disables playback (audio output) and disables recording (audio input). Use this category, for example, when performing offline audio format conversion.
+   */
+  AudioProcessing = 'AudioProcessing',
+  /**
+   * This category can be used for input, output, or both. For example, use this category to route audio to both a USB device and a set of headphones. Use of this category requires a more detailed knowledge of, and interaction with, the capabilities of the available audio routes.
+   * @important
+   * Route changes can invalidate part or all of your multi-route configuration. When using the multiRoute category, it is essential that you register to observe routeChangeNotification notifications and update your configuration as necessary.
+   */
+  MultiRoute = 'MultiRoute',
+}
 
 /**
- * Modes of AV Audio sessions.
- * @export
+ * Categories of AV Audio sessions.
+ * Refer to Apple Docs: https://developer.apple.com/documentation/avfaudio/avaudiosession/category-swift.struct
  */
-export type AVAudioSessionMode =
-  | 'Default'
-  | 'VoiceChat'
-  | 'VideoChat'
-  | 'GameChat'
-  | 'VideoRecording'
-  | 'Measurement'
-  | 'MoviePlayback'
-  | 'SpokenAudio';
+// export type AVAudioSessionCategory = typeof AVAudioSessionCategory[keyof typeof AVAudioSessionCategoryMap];
+
+export enum AVAudioSessionMode {
+  /**
+   * Default mode, no specific optimizations applied. You can use this mode with every audio session category.
+   */
+  Default = 'Default',
+  /**
+   * Use this mode for Voice over IP (VoIP) apps that use the playAndRecord category. When you set this mode, the session optimizes the device’s tonal equalization for voice and reduces the set of allowable audio routes to only those appropriate for voice chat.
+   * Using this mode has the side effect of enabling the allowBluetooth category option.
+   * For apps that use voice or video chat, also use the Voice-Processing I/O audio unit. The Voice-Processing I/O unit provides several features for VoIP apps, including automatic gain correction, adjustment of voice processing, and muting. See Voice-Processing I/O Unit for more information.
+   * If an app uses the Voice-Processing I/O audio unit and hasn’t set its mode to one of the chat modes (voice, video, or game), the session sets the voiceChat mode implicitly. On the other hand, if the app had previously set its category to playAndRecord and its mode to videoChat or gameChat, instantiating the Voice-Processing I/O audio unit doesn’t cause the mode to change.
+   */
+  VoiceChat = 'VoiceChat',
+  /**
+   * Use this mode for video chat apps that use the playAndRecord or record categories. When you set this mode, the audio session optimizes the device’s tonal equalization for voice. It also reduces the set of allowable audio routes to only those appropriate for video chat.
+   * Using this mode has the side effect of enabling the allowBluetooth category option.
+   * For apps that use voice or video chat, also use the Voice-Processing I/O audio unit. The Voice-Processing I/O unit provides several features for VoIP apps, including automatic gain correction, adjustment of voice processing, and muting. See Voice-Processing I/O Unit for more information.
+   * If an app uses the Voice-Processing I/O audio unit and hasn’t set its mode to one of the chat modes (voice, video, or game), the session sets the voiceChat mode implicitly. On the other hand, if the app had previously set its category to playAndRecord and its mode to videoChat or gameChat, instantiating the Voice-Processing I/O audio unit doesn’t cause the mode to change.
+   */
+  VideoChat = 'VideoChat',
+  /**
+   * This mode is valid only with the playAndRecord audio session category.
+   * Don’t set this mode directly. If you need similar behavior and aren’t using a GKVoiceChat object, use voiceChat or videoChat instead.
+   */
+  GameChat = 'GameChat',
+  /**
+   * This mode is valid only with the record and playAndRecord audio session categories. On devices with more than one built-in microphone, the audio session uses the microphone closest to the video camera.
+   * Use this mode to ensure that the system provides appropriate audio-signal processing.
+   * Use AVCaptureSession in conjunction with the video recording mode for greater control of input and output routes. For example, setting the automaticallyConfiguresApplicationAudioSession property results in the session automatically choosing the best input route for the device and camera used.
+   */
+  VideoRecording = 'VideoRecording',
+  /**
+   * Use this mode for apps that need to minimize the amount of system-supplied signal processing to input and output signals. If recording on devices with more than one built-in microphone, the session uses the primary microphone.
+   * For use with the playback, record, or playAndRecord audio session categories.
+   * @important
+   * This mode disables some dynamics processing on input and output signals, resulting in a lower-output playback level.
+   */
+  Measurement = 'Measurement',
+  /**
+   * When you set this mode, the audio session uses signal processing to enhance movie playback for certain audio routes such as built-in speaker or headphones. You may only use this mode with the playback audio session category.
+   */
+  MoviePlayback = 'MoviePlayback',
+  /**
+   * This mode is appropriate for apps that play continuous spoken audio, such as podcasts or audio books. Setting this mode indicates that your app should pause, rather than duck, its audio if another app plays a spoken audio prompt. After the interrupting app’s audio ends, you can resume your app’s audio playback.
+   */
+  SpokenAudio = 'SpokenAudio',
+  /**
+   * Setting this mode allows for different routing behaviors when your app connects to certain audio devices, such as CarPlay. An example of an app that uses this mode is a turn-by-turn navigation app that plays short prompts to the user.
+   * Typically, apps of the same type also configure their sessions to use the duckOthers and interruptSpokenAudioAndMixWithOthers options.
+   */
+  VoicePrompt = 'VoicePrompt',
+}
+
+/**
+ * Mapping of AVAudioSessionCategory to compatible AVAudioSessionMode values.
+ */
+export type AVAudioSessionCompatibleModes = {
+  Ambient: AVAudioSessionMode.Default | AVAudioSessionMode.SpokenAudio;
+  SoloAmbient: AVAudioSessionMode.Default | AVAudioSessionMode.SpokenAudio;
+  Playback:
+    | AVAudioSessionMode.Default
+    | AVAudioSessionMode.MoviePlayback
+    | AVAudioSessionMode.SpokenAudio
+    | AVAudioSessionMode.Measurement;
+  Record:
+    | AVAudioSessionMode.Default
+    | AVAudioSessionMode.VideoRecording
+    | AVAudioSessionMode.VideoChat
+    | AVAudioSessionMode.Measurement
+    | AVAudioSessionMode.SpokenAudio;
+  PlayAndRecord:
+    | AVAudioSessionMode.Default
+    | AVAudioSessionMode.Measurement
+    | AVAudioSessionMode.SpokenAudio
+    | AVAudioSessionMode.VoiceChat
+    | AVAudioSessionMode.VideoChat
+    | AVAudioSessionMode.GameChat
+    | AVAudioSessionMode.VideoRecording;
+  AudioProcessing: AVAudioSessionMode.Default | AVAudioSessionMode.SpokenAudio;
+  MultiRoute: AVAudioSessionMode.Default | AVAudioSessionMode.SpokenAudio;
+};
 
 /**
  * Types of volume on Android.

@@ -15,6 +15,7 @@ import type {
   setCheckIntervalType,
   VolumeManagerSetVolumeConfig,
   VolumeResult,
+  AVAudioSessionCompatibleModes,
 } from './types';
 
 /**
@@ -131,6 +132,27 @@ export async function setActive(
 }
 
 /**
+ * Sets an AVAudioSession category and mode, ensuring compatibility.
+ * @platform iOS
+ * @param category - The AVAudioSession category. Possible values: `Ambient`,`SoloAmbient`, `Playback`, `Record`, `PlayAndRecord`, `AudioProcessing`, `MultiRoute`, `Alarm`
+ * @param mode - The AVAudioSession mode, constrained to compatible options for the category.
+ * 
+ * For a more details, refer to Apple docs: https://developer.apple.com/documentation/avfaudio/avaudiosession
+ * 
+ */
+export async function configureAVAudioSession<
+  T extends AVAudioSessionCategory,
+  M extends AVAudioSessionCompatibleModes[T]
+>({category, mode, mixWithOthers = true}:{category: T, mode: M, mixWithOthers?: boolean}): Promise<void> {
+  if(!isAndroid) {
+    await Promise.all([VolumeManagerNativeModule.setCategory(category, mixWithOthers), VolumeManagerNativeModule.setMode(mode)]);
+  }
+  return undefined
+}
+
+/**
+ * * @deprecated Use `configureAVAudioSession` instead.
+ * 
  * Sets the audio session category. iOS only.
  * @param {AVAudioSessionCategory} value - The category to set
  * @param {boolean} [mixWithOthers=false] - Allow audio to mix with others
@@ -147,6 +169,8 @@ export async function setCategory(
 }
 
 /**
+ * * @deprecated Use `configureAVAudioSession` instead.
+ * 
  * Sets the audio session mode. iOS only.
  * @param {AVAudioSessionMode} value - The mode to set
  * @returns {Promise<void>} - Resolves when the operation has finished
@@ -334,6 +358,7 @@ export const VolumeManager = {
   checkDndAccess,
   requestDndAccess,
   enable,
+  configureAVAudioSession,
   setActive,
   setCategory,
   setMode,

@@ -229,15 +229,18 @@ The `VolumeManager` API provides an interface for controlling and observing volu
 
 - `setActive(value: boolean, async: boolean): Promise<void>`: Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
 
-- `setCategory(value: AVAudioSessionCategory, mixWithOthers?: boolean): Promise<void>`: Sets the category for the AVAudioSession in your iOS app. `mixWithOthers` is an optional parameter that, if true, allows your audio to mix with audio from other apps.
-
-- `setMode(mode: AVAudioSessionMode): Promise<void>`: Sets the mode for the AVAudioSession in your iOS app.
+- `configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, mixWithOthers?: boolean }): Promise<void>`: Configures the AVAudioSession category with compatible AVAudioSession modes. `mixWithOthers` is an optional parameter that, if true, allows your audio to mix with audio from other apps.
 
 - `enableInSilenceMode(value: boolean): Promise<void>`: If value is true, this function allows your app to play audio even when the device is in silent mode. When value is false, audio will not play in silent mode.
 
 - `setNativeSilenceCheckInterval(value: number)`: Sets the interval at which the native system checks the state of the silent switch.
 
 - `addSilentListener(callback: RingMuteSwitchEventCallback): EmitterSubscription | EmitterSubscriptionNoop`: Adds a listener that will be called when the silent switch state changes.
+
+*Deprecated Method (Replaced with `configureAVAudioSession`)*
+- `setCategory(value: AVAudioSessionCategory, mixWithOthers?: boolean): Promise<void>`: Sets the category for the AVAudioSession in your iOS app. `mixWithOthers` is an optional parameter that, if true, allows your audio to mix with audio from other apps.
+
+- `setMode(mode: AVAudioSessionMode): Promise<void>`: Sets the mode for the AVAudioSession in your iOS app.
 
 ### Android-only methods:
 
