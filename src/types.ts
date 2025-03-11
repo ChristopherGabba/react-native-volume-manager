@@ -134,6 +134,72 @@ export enum AVAudioSessionMode {
 }
 
 /**
+ * Route Sharing Policies for AV Audio Sessions.
+ * Refer to Apple Docs: https://developer.apple.com/documentation/avfaudio/avaudiosession/routesharingpolicy-swift.enum
+ */
+// export type AVAudioSessionCategory = typeof AVAudioSessionCategory[keyof typeof AVAudioSessionCategoryMap];
+
+export enum AVAudioSessionRouteSharingPolicy {
+  /**
+   * A policy that follows standard rules for routing audio output.
+   */
+  Default = 'Default',
+  /**
+   * Apps that play long-form audio, such as music or audio books, can use this policy to play to the same output as the built-in Music and Podcast apps. Long-form audio apps should also use the Media Player framework to add support for remote control events and to provide Now Playing information.
+   */
+  LongFormAudio = 'LongFormAudio',
+  /**
+   * Apps that play long-form video content can use this policy to play to the same output as other long-form video apps, such as the built-in TV app.
+   */
+  LongFormVideo = 'LongFormVideo',
+  /**
+   * In iOS, the system sets this policy in cases where the user directs video to a wireless route using the route picker UI. Apps shouldn’t try to set this value directly.
+   */
+  Independent = 'Independent',
+}
+
+/**
+ * Route Sharing Policies for AV Audio Sessions.
+ * Refer to Apple Docs: https://developer.apple.com/documentation/avfaudio/avaudiosession/routesharingpolicy-swift.enum
+ */
+// export type AVAudioSessionCategory = typeof AVAudioSessionCategory[keyof typeof AVAudioSessionCategoryMap];
+
+export enum AVAudioSessionCategoryOptions {
+  /**
+   * An option that indicates whether audio from this session mixes with audio from active sessions in other audio apps.
+   */
+  MixWithOthers = 'MixWithOthers',
+  /**
+   * An option that reduces the volume of other audio sessions while audio from this session plays.
+   */
+  DuckOthers = 'DuckOthers',
+  /**
+   * An option that determines whether to pause spoken audio content from other sessions when your app plays its audio.
+   */
+  InterruptSpokenAudioAndMixWithOthers = 'InterruptSpokenAudioAndMixWithOthers',
+  /**
+   * An option that determines whether Bluetooth hands-free devices appear as available input routes
+   */
+  AllowBluetooth = 'AllowBluetooth',
+  /**
+   * An option that determines whether you can stream audio from this session to Bluetooth devices that support the Advanced Audio Distribution Profile (A2DP).
+   */
+  AllowBluetoothA2DP = 'AllowBluetoothA2DP',
+  /**
+   * An option that determines whether you can stream audio from this session to AirPlay devices.
+   */
+  AllowAirPlay = 'AllowAirPlay',
+  /**
+   * An option that determines whether audio from the session defaults to the built-in speaker instead of the receiver.
+   */
+  DefaultToSpeaker = 'DefaultToSpeaker',
+  /**
+   * An option that indicates whether the system interrupts the audio session when it mutes the built-in microphone.
+   */
+  OverrideMutedMicrophoneInterruption = 'OverrideMutedMicrophoneInterruption',
+}
+
+/**
  * Mapping of AVAudioSessionCategory to compatible AVAudioSessionMode values.
  */
 export type AVAudioSessionCompatibleModes = {

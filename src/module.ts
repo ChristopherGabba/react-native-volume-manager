@@ -5,7 +5,7 @@ import {
   Platform,
   EmitterSubscription,
 } from 'react-native';
-import type {
+import {
   AVAudioSessionCategory,
   AVAudioSessionMode,
   EmitterSubscriptionNoop,
@@ -16,6 +16,10 @@ import type {
   VolumeManagerSetVolumeConfig,
   VolumeResult,
   AVAudioSessionCompatibleModes,
+} from './types';
+import {
+  AVAudioSessionRouteSharingPolicy,
+  AVAudioSessionCategoryOptions,
 } from './types';
 
 /**
@@ -132,27 +136,61 @@ export async function setActive(
 }
 
 /**
- * Sets an AVAudioSession category and mode, ensuring compatibility.
+ * Configures an AVAudioSession with the specified category, mode, and additional options.
+ * This method is only available on iOS and ensures compatibility between categories and modes.
+ *
  * @platform iOS
- * @param category - The AVAudioSession category. Possible values: `Ambient`,`SoloAmbient`, `Playback`, `Record`, `PlayAndRecord`, `AudioProcessing`, `MultiRoute`, `Alarm`
- * @param mode - The AVAudioSession mode, constrained to compatible options for the category.
- * 
- * For a more details, refer to Apple docs: https://developer.apple.com/documentation/avfaudio/avaudiosession
- * 
+ * @param category - The AVAudioSession category. Possible values: "Ambient", "SoloAmbient", "Playback", "Record", "PlayAndRecord", "MultiRoute".
+ * @param mode - The AVAudioSession mode. Possible values: "Default", "VoiceChat", "VideoChat", "GameChat", "VideoRecording", "Measurement", "MoviePlayback", "SpokenAudio". 
+ * @param policy - The route sharing policy. Possible values: "Default", "LongFormAudio", "LongFormVideo", "Independent". Defaults to 'Default' 
+ * @param options - Array of category options. Possible values: "MixWithOthers", "AllowBluetooth", "AllowBluetoothA2DP", "AllowAirPlay", "DuckOthers", "DefaultToSpeaker", "InterruptSpokenAudioAndMixWithOthers", "OverrideMutedMicrophoneInterruption".
+ * @param prefersNoInterruptionFromSystemAlerts - If true, prefers no interruptions from system alerts (iOS 14.0+).
+ * @param prefersInterruptionOnRouteDisconnect - If true, prefers interruption on route disconnect (iOS 16.0+).
+ * @param allowHapticsAndSystemSoundsDuringRecording - If true, allows haptics and system sounds during recording (iOS 13.0+).
+ * @returns {Promise<void>} A promise that resolves when the configuration is complete, or rejects with an error if it fails.
+ * @see {@link https://developer.apple.com/documentation/avfaudio/avaudiosession|Apple AVAudioSession Documentation}
  */
 export async function configureAVAudioSession<
   T extends AVAudioSessionCategory,
   M extends AVAudioSessionCompatibleModes[T]
->({category, mode, mixWithOthers = true}:{category: T, mode: M, mixWithOthers?: boolean}): Promise<void> {
-  if(!isAndroid) {
-    await Promise.all([VolumeManagerNativeModule.setCategory(category, mixWithOthers), VolumeManagerNativeModule.setMode(mode)]);
+>({
+  category,
+  mode,
+  policy = AVAudioSessionRouteSharingPolicy.Default,
+  options = [
+    AVAudioSessionCategoryOptions.MixWithOthers,
+    AVAudioSessionCategoryOptions.AllowBluetooth,
+  ],
+  prefersNoInterruptionFromSystemAlerts = true,
+  prefersInterruptionOnRouteDisconnect = true,
+  allowHapticsAndSystemSoundsDuringRecording = true,
+}: {
+  category: T;
+  mode: M;
+  policy?: AVAudioSessionRouteSharingPolicy;
+  options?: AVAudioSessionCategoryOptions[];
+  prefersNoInterruptionFromSystemAlerts?: boolean;
+  prefersInterruptionOnRouteDisconnect?: boolean;
+  allowHapticsAndSystemSoundsDuringRecording?: boolean;
+}): Promise<void> {
+
+  if (!isAndroid) {
+    return VolumeManagerNativeModule.configureAVAudioSession(
+      category,
+      mode,
+      policy,
+      options,
+      prefersNoInterruptionFromSystemAlerts,
+      prefersInterruptionOnRouteDisconnect,
+      allowHapticsAndSystemSoundsDuringRecording
+    );
   }
-  return undefined
+  return undefined;
 }
 
 /**
  * * @deprecated Use `configureAVAudioSession` instead.
- * 
+ *
  * Sets the audio session category. iOS only.
  * @param {AVAudioSessionCategory} value - The category to set
  * @param {boolean} [mixWithOthers=false] - Allow audio to mix with others
@@ -170,7 +208,7 @@ export async function setCategory(
 
 /**
  * * @deprecated Use `configureAVAudioSession` instead.
- * 
+ *
  * Sets the audio session mode. iOS only.
  * @param {AVAudioSessionMode} value - The mode to set
  * @returns {Promise<void>} - Resolves when the operation has finished

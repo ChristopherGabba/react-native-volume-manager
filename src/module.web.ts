@@ -7,6 +7,9 @@ import type {
   RingerModeType,
   VolumeManagerSetVolumeConfig,
   VolumeResult,
+  AVAudioSessionCompatibleModes,
+  AVAudioSessionRouteSharingPolicy,
+  AVAudioSessionCategoryOptions,
 } from './types';
 
 // Track if warning has been shown
@@ -70,6 +73,24 @@ export async function setCategory(
 }
 
 export async function setMode(_value: AVAudioSessionMode): Promise<void> {
+  warnOnWeb();
+  return undefined;
+}
+
+
+export async function configureAVAudioSession<
+  T extends AVAudioSessionCategory,
+  M extends AVAudioSessionCompatibleModes[T]
+>({}: {
+  category: T;
+  mode: M;
+  policy?: AVAudioSessionRouteSharingPolicy;
+  options?: AVAudioSessionCategoryOptions[];
+  prefersNoInterruptionFromSystemAlerts?: boolean;
+  prefersInterruptionOnRouteDisconnect?: boolean;
+  allowHapticsAndSystemSoundsDuringRecording?: boolean;
+}): Promise<void> {
+
   warnOnWeb();
   return undefined;
 }

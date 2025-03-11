@@ -270,10 +270,129 @@ RCT_EXPORT_METHOD(setActive:(BOOL)active async:(BOOL)async) {
   }
 }
 
+RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
+                  mode:(NSString *)modeName
+                  policy:(NSString *)policyName
+                  options:(NSArray<NSString *> *)optionsArray
+                  prefersNoInterruptionFromSystemAlerts:(BOOL)prefersNoInterruptionFromSystemAlerts
+                  prefersInterruptionOnRouteDisconnect:(BOOL)prefersInterruptionOnRouteDisconnect
+                  allowHapticsAndSystemSoundsDuringRecording:(BOOL)allowHapticsAndSystemSoundsDuringRecording) {
+
+  AVAudioSession *session = [AVAudioSession sharedInstance];
+  
+  NSString *category = nil;
+  if ([categoryName isEqualToString:@"Ambient"]) {
+    category = AVAudioSessionCategoryAmbient;
+  } else if ([categoryName isEqualToString:@"SoloAmbient"]) {
+    category = AVAudioSessionCategorySoloAmbient;
+  } else if ([categoryName isEqualToString:@"Playback"]) {
+    category = AVAudioSessionCategoryPlayback;
+  } else if ([categoryName isEqualToString:@"Record"]) {
+    category = AVAudioSessionCategoryRecord;
+  } else if ([categoryName isEqualToString:@"PlayAndRecord"]) {
+    category = AVAudioSessionCategoryPlayAndRecord;
+  } else if ([categoryName isEqualToString:@"MultiRoute"]) {
+    category = AVAudioSessionCategoryMultiRoute;
+  }
+
+  NSString *mode = nil;
+  if ([modeName isEqualToString:@"Default"]) {
+    mode = AVAudioSessionModeDefault;
+  } else if ([modeName isEqualToString:@"VoiceChat"]) {
+    mode = AVAudioSessionModeVoiceChat;
+  } else if ([modeName isEqualToString:@"VideoChat"]) {
+    mode = AVAudioSessionModeVideoChat;
+  } else if ([modeName isEqualToString:@"GameChat"]) {
+    mode = AVAudioSessionModeGameChat;
+  } else if ([modeName isEqualToString:@"VideoRecording"]) {
+    mode = AVAudioSessionModeVideoRecording;
+  } else if ([modeName isEqualToString:@"Measurement"]) {
+    mode = AVAudioSessionModeMeasurement;
+  } else if ([modeName isEqualToString:@"MoviePlayback"]) {
+    mode = AVAudioSessionModeMoviePlayback;
+  } else if ([modeName isEqualToString:@"SpokenAudio"]) {
+    mode = AVAudioSessionModeSpokenAudio;
+  }
+
+// Handle policy (map NSString to AVAudioSessionRouteSharingPolicy)
+  AVAudioSessionRouteSharingPolicy policy = AVAudioSessionRouteSharingPolicyDefault;
+  if ([policyName isEqualToString:@"LongFormAudio"]) {
+    policy = AVAudioSessionRouteSharingPolicyLongFormAudio;
+  } else if ([policyName isEqualToString:@"LongFormVideo"]) {
+    policy = AVAudioSessionRouteSharingPolicyLongFormVideo;
+  } else if ([policyName isEqualToString:@"Independent"]) {
+    policy = AVAudioSessionRouteSharingPolicyIndependent;
+  }
+
+  // Handle options array
+  AVAudioSessionCategoryOptions options = 0;
+  for (NSString *optionName in optionsArray) {
+    if ([optionName isEqualToString:@"MixWithOthers"]) {
+      options |= AVAudioSessionCategoryOptionMixWithOthers;
+    } else if ([optionName isEqualToString:@"AllowBluetooth"]) {
+      options |= AVAudioSessionCategoryOptionAllowBluetooth;
+    } else if ([optionName isEqualToString:@"AllowBluetoothA2DP"]) {
+      options |= AVAudioSessionCategoryOptionAllowBluetoothA2DP;
+    } else if ([optionName isEqualToString:@"AllowAirPlay"]) {
+      options |= AVAudioSessionCategoryOptionAllowAirPlay;
+    } else if ([optionName isEqualToString:@"DuckOthers"]) {
+      options |= AVAudioSessionCategoryOptionDuckOthers;
+    } else if ([optionName isEqualToString:@"DefaultToSpeaker"]) {
+      options |= AVAudioSessionCategoryOptionDefaultToSpeaker;
+    } else if ([optionName isEqualToString:@"InterruptSpokenAudioAndMixWithOthers"]) {
+      options |= AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers;
+    }else if ([optionName isEqualToString:@"OverrideMutedMicrophoneInterruption"]) {
+      options |= AVAudioSessionCategoryOptionOverrideMutedMicrophoneInterruption;
+    }
+  }
+
+  if (category) {
+
+      NSError *error = nil;
+     [session setCategory:category
+                     mode:mode ?: AVAudioSessionModeDefault
+       routeSharingPolicy:policy
+                  options:options
+                    error:&error];
+    
+      if (error) {
+        NSLog(@"Failed to configure audio session: %@", error);
+        return;
+      }
+
+    // Set additional preferences with version checks
+    if (@available(iOS 14.0, *)) {
+      [session setPrefersNoInterruptionsFromSystemAlerts:prefersNoInterruptionFromSystemAlerts error:&error];
+      if (error) {
+        NSLog(@"Failed to set prefersNoInterruptionsFromSystemAlerts: %@", error);
+        error = nil;
+      }
+    }
+    
+    if (@available(iOS 17.0, *)) {
+      [session setPrefersInterruptionOnRouteDisconnect:prefersInterruptionOnRouteDisconnect error:&error];
+      if (error) {
+        NSLog(@"Failed to set prefersInterruptionOnRouteDisconnect: %@", error);
+        error = nil;
+      }
+    }
+    
+    if (@available(iOS 13.0, *)) {
+      [session setAllowHapticsAndSystemSoundsDuringRecording:allowHapticsAndSystemSoundsDuringRecording error:&error];
+      if (error) {
+        NSLog(@"Failed to set allowHapticsAndSystemSoundsDuringRecording: %@", error);
+      }
+    }
+  } else {
+     NSLog(@"Did not provide any category to set:");
+  }
+}
+
 RCT_EXPORT_METHOD(setMode:(NSString *)modeName) {
   AVAudioSession *session = [AVAudioSession sharedInstance];
   NSString *mode = nil;
   
+
   if ([modeName isEqual:@"Default"]) {
     mode = AVAudioSessionModeDefault;
   } else if ([modeName isEqual:@"VoiceChat"]) {

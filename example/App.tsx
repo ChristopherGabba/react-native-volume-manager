@@ -17,7 +17,9 @@ import {
   RINGER_MODE,
   RingerSilentStatus,
   AVAudioSessionCategory,
-  AVAudioSessionMode
+  AVAudioSessionMode,
+  AVAudioSessionRouteSharingPolicy,
+  AVAudioSessionCategoryOptions
 } from '../src/types';
 import Slider from '@react-native-community/slider';
 
@@ -42,6 +44,20 @@ export default function App() {
   useEffect(() => {
     VolumeManager.showNativeVolumeUI({ enabled: !hideUI });
   }, [hideUI]);
+
+  useEffect(()=>{
+    try {
+      VolumeManager.configureAVAudioSession({
+        category: AVAudioSessionCategory.PlayAndRecord,
+        mode: AVAudioSessionMode.VideoRecording,
+        policy: AVAudioSessionRouteSharingPolicy.Default,
+        options: [AVAudioSessionCategoryOptions.MixWithOthers, AVAudioSessionCategoryOptions.AllowBluetooth],
+      })
+    } catch(error) {
+      console.log(error)
+    }
+
+  },[])
 
   useEffect(() => {
     VolumeManager.getVolume().then((result) => {
