@@ -229,7 +229,7 @@ The `VolumeManager` API provides an interface for controlling and observing volu
 
 - `setActive(value: boolean, async: boolean): Promise<void>`: Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
 
-- `configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, mixWithOthers?: boolean }): Promise<void>`: Configures the AVAudioSession category with compatible AVAudioSession modes. `mixWithOthers` is an optional parameter that, if true, allows your audio to mix with audio from other apps.
+- `configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, options: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`: Configures the AVAudioSession category with compatible AVAudioSession modes and allows further customization of audio session properties.
 
 - `enableInSilenceMode(value: boolean): Promise<void>`: If value is true, this function allows your app to play audio even when the device is in silent mode. When value is false, audio will not play in silent mode.
 
