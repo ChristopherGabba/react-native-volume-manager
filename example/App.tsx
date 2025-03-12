@@ -13,14 +13,7 @@ import {
 } from 'react-native';
 import { VolumeManager } from '../src/module';
 import { useRingerMode } from '../src/hooks';
-import {
-  RINGER_MODE,
-  RingerSilentStatus,
-  AVAudioSessionCategory,
-  AVAudioSessionMode,
-  AVAudioSessionRouteSharingPolicy,
-  AVAudioSessionCategoryOptions
-} from '../src/types';
+import { RINGER_MODE, RingerSilentStatus } from '../src/types';
 import Slider from '@react-native-community/slider';
 
 const modeText = {
