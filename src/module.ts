@@ -16,6 +16,7 @@ import {
   VolumeManagerSetVolumeConfig,
   VolumeResult,
   AVAudioSessionCompatibleModes,
+  AVAudioSessionStatus,
 } from './types';
 import {
   AVAudioSessionRouteSharingPolicy,
@@ -140,14 +141,7 @@ export async function setActive(
  * This method is only available on iOS and ensures compatibility between categories and modes.
  *
  * @platform iOS
- * @param category - The AVAudioSession category. Possible values: "Ambient", "SoloAmbient", "Playback", "Record", "PlayAndRecord", "MultiRoute".
- * @param mode - The AVAudioSession mode. Possible values: "Default", "VoiceChat", "VideoChat", "GameChat", "VideoRecording", "Measurement", "MoviePlayback", "SpokenAudio". 
- * @param policy - The route sharing policy. Possible values: "Default", "LongFormAudio", "LongFormVideo", "Independent". Defaults to 'Default' 
- * @param options - Array of category options. Possible values: "MixWithOthers", "AllowBluetooth", "AllowBluetoothA2DP", "AllowAirPlay", "DuckOthers", "DefaultToSpeaker", "InterruptSpokenAudioAndMixWithOthers", "OverrideMutedMicrophoneInterruption".
- * @param prefersNoInterruptionFromSystemAlerts - If true, prefers no interruptions from system alerts (iOS 14.0+).
- * @param prefersInterruptionOnRouteDisconnect - If true, prefers interruption on route disconnect (iOS 16.0+).
- * @param allowHapticsAndSystemSoundsDuringRecording - If true, allows haptics and system sounds during recording (iOS 13.0+).
- * @returns {Promise<void>} A promise that resolves when the configuration is complete, or rejects with an error if it fails.
+ * @returns {Promise<void>}
  * @see {@link https://developer.apple.com/documentation/avfaudio/avaudiosession|Apple AVAudioSession Documentation}
  */
 export async function configureAVAudioSession<
@@ -165,15 +159,47 @@ export async function configureAVAudioSession<
   prefersInterruptionOnRouteDisconnect = true,
   allowHapticsAndSystemSoundsDuringRecording = true,
 }: {
+  /**
+   * The AVAudioSession category to tell the iPhone how to manage audio for different customized scenarios.
+   *  @type {"Ambient" | "SoloAmbient" | "Playback" | "Record" | "PlayAndRecord" | "MultiRoute"}
+   * @default AVAudioSessionCompatibleModes.Ambient
+   */
   category: T;
+  /**
+   * The compatible modes with the categories.
+   * @type {"Default" | "VoiceChat" | "VideoChat" | "GameChat" | "VideoRecording" | "Measurement" | "MoviePlayback" | "SpokenAudio"}
+   * @default AVAudioSessionCompatibleModes.Default
+   */
   mode: M;
+  /**
+   * @type {"Default" | "LongFormAudio" | "LongFormVideo" | "Independent"}
+   * @default AVAudioSessionRouteSharingPolicy.Default
+   */
   policy?: AVAudioSessionRouteSharingPolicy;
+  /**
+   * @type {Array<"MixWithOthers" | "AllowBluetooth" | "AllowBluetoothA2DP" | "AllowAirPlay" | "DuckOthers" | "DefaultToSpeaker" | "InterruptSpokenAudioAndMixWithOthers" | "OverrideMutedMicrophoneInterruption">}
+   *
+   * Note that these can kind of act funny. iOS has default Values that are sometimes placed within the array of options due to various modes and categories preset.
+   *
+   * @default [AVAudioSessionCategoryOptions.MixWithOthers,AVAudioSessionCategoryOptions.AllowBluetooth]
+   */
   options?: AVAudioSessionCategoryOptions[];
+  /**
+   * If true, prefers no interruptions from system alerts (iOS 14.0+).
+   * @default true
+   */
   prefersNoInterruptionFromSystemAlerts?: boolean;
+  /**
+   * If true, prefers interruption on route disconnect (iOS 16.0+).
+   * @default true
+   */
   prefersInterruptionOnRouteDisconnect?: boolean;
+  /**
+   * If true, allows haptics and system sounds while recording
+   * @default true
+   */
   allowHapticsAndSystemSoundsDuringRecording?: boolean;
 }): Promise<void> {
-
   if (!isAndroid) {
     return VolumeManagerNativeModule.configureAVAudioSession(
       category,
@@ -187,6 +213,27 @@ export async function configureAVAudioSession<
   }
   return undefined;
 }
+
+/**
+ * Retrieves the current AVAudioSession status from the native iOS side.
+ * @returns {Promise<AVAudioSessionStatus>} A promise that resolves with the audio session status.
+ */
+export const getAVAudioSessionStatus = (): Promise<
+  AVAudioSessionStatus | undefined
+> => {
+  if (isAndroid) return Promise.resolve(undefined);
+  return new Promise((resolve, reject) => {
+    VolumeManagerNativeModule.getAVAudioSessionStatus(
+      (error: Error, status: AVAudioSessionStatus) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(status);
+        }
+      }
+    );
+  });
+};
 
 /**
  * * @deprecated Use `configureAVAudioSession` instead.
@@ -397,6 +444,7 @@ export const VolumeManager = {
   requestDndAccess,
   enable,
   configureAVAudioSession,
+  getAVAudioSessionStatus,
   setActive,
   setCategory,
   setMode,

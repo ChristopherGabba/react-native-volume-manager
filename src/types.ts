@@ -228,6 +228,17 @@ export type AVAudioSessionCompatibleModes = {
   MultiRoute: AVAudioSessionMode.Default | AVAudioSessionMode.SpokenAudio;
 };
 
+export type AVAudioSessionStatus = {
+  isOtherAudioPlaying: boolean
+  category: AVAudioSessionCategory,
+  mode: AVAudioSessionMode
+  categoryOptions: AVAudioSessionCategoryOptions[],
+  routeSharingPolicy?: AVAudioSessionRouteSharingPolicy,
+  prefersNoInterruptionsFromSystemAlerts?: boolean
+  prefersInterruptionOnRouteDisconnect?: boolean
+  allowHapticsAndSystemSoundsDuringRecording?: boolean
+}
+
 /**
  * Types of volume on Android.
  * @export

@@ -211,6 +211,11 @@ public class VolumeManagerModule extends ReactContextBaseJavaModule implements A
   }
 
   @ReactMethod
+  public void getAVAudioSessionStatus() {
+    // no op
+  }
+
+  @ReactMethod
   public void addListener(String eventName) {
     if (eventName.equals("RNVMEventVolume")) {
       volumeMonitoringEnabled = true;

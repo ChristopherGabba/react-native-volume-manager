@@ -323,7 +323,6 @@ RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
   } else if ([policyName isEqualToString:@"Independent"]) {
     policy = AVAudioSessionRouteSharingPolicyIndependent;
   }
-
   // Handle options array
   AVAudioSessionCategoryOptions options = 0;
   for (NSString *optionName in optionsArray) {
@@ -386,6 +385,94 @@ RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
   } else {
      NSLog(@"Did not provide any category to set:");
   }
+}
+
+RCT_EXPORT_METHOD(getAVAudioSessionStatus:(RCTResponseSenderBlock)callback) {
+
+  AVAudioSession *session = [AVAudioSession sharedInstance];
+
+  BOOL isOtherAudioPlaying = [session isOtherAudioPlaying];
+
+  // Handle additional preferences with version checks
+  BOOL prefersInterruptionOnRouteDisconnect = NO;
+  BOOL prefersNoInterruptionsFromSystemAlerts = NO;
+  BOOL allowHapticsAndSystemSoundsDuringRecording = NO;
+
+  NSString *category = session.category ?: @"None";
+  NSString *mode = session.mode ?: @"None";
+  NSUInteger options = session.categoryOptions;  
+  NSString *sharingPolicy = @"Unknown";
+
+  if (@available(iOS 13.0, *)) {
+    switch (session.routeSharingPolicy) {
+      case AVAudioSessionRouteSharingPolicyDefault:
+        sharingPolicy = @"Default";
+        break;
+      case AVAudioSessionRouteSharingPolicyLongFormAudio:
+        sharingPolicy = @"LongFormAudio";
+        break;
+      case AVAudioSessionRouteSharingPolicyIndependent:
+        sharingPolicy = @"Independent";
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Set preferences based on iOS versions
+  if (@available(iOS 14.0, *)) {
+    prefersNoInterruptionsFromSystemAlerts = [session prefersNoInterruptionsFromSystemAlerts];
+  }
+
+  if (@available(iOS 17.0, *)) {
+    prefersInterruptionOnRouteDisconnect = [session prefersInterruptionOnRouteDisconnect];
+  }
+  
+  if (@available(iOS 13.0, *)) {
+    allowHapticsAndSystemSoundsDuringRecording = [session allowHapticsAndSystemSoundsDuringRecording];
+  }
+
+  // Convert options to an array of human-readable strings 
+  NSMutableArray *optionsArray = [NSMutableArray array];
+
+// Check for each option and add to the options array
+if (options & AVAudioSessionCategoryOptionMixWithOthers) {
+    [optionsArray addObject:@"MixWithOthers"];
+}
+if (options & AVAudioSessionCategoryOptionDuckOthers) {
+    [optionsArray addObject:@"DuckOthers"];
+}
+if (options & AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers) {
+    [optionsArray addObject:@"InterruptSpokenAudioAndMixWithOthers"];
+}
+if (options & AVAudioSessionCategoryOptionAllowBluetooth) {
+    [optionsArray addObject:@"AllowBluetooth"];
+}
+if (options & AVAudioSessionCategoryOptionAllowBluetoothA2DP) {
+    [optionsArray addObject:@"AllowBluetoothA2DP"];
+}
+if (options & AVAudioSessionCategoryOptionAllowAirPlay) {
+    [optionsArray addObject:@"AllowAirPlay"];
+}
+if (options & AVAudioSessionCategoryOptionDefaultToSpeaker) {
+    [optionsArray addObject:@"DefaultToSpeaker"];
+}
+if (options & AVAudioSessionCategoryOptionOverrideMutedMicrophoneInterruption) {
+    [optionsArray addObject:@"OverrideMutedMicrophoneInterruption"];
+}
+  // Package all properties into a dictionary
+  NSDictionary *status = @{
+    @"isOtherAudioPlaying": @(isOtherAudioPlaying),
+    @"category": category,
+    @"mode": mode,
+    @"categoryOptions": optionsArray,
+    @"routeSharingPolicy": sharingPolicy,
+    @"prefersInterruptionOnRouteDisconnect": @(prefersInterruptionOnRouteDisconnect),
+    @"prefersNoInterruptionsFromSystemAlerts": @(prefersNoInterruptionsFromSystemAlerts),
+    @"allowHapticsAndSystemSoundsDuringRecording": @(allowHapticsAndSystemSoundsDuringRecording)
+  };
+  // Call the callback with no error (NSNull) and the status dictionary
+  callback(@[[NSNull null], status]);
 }
 
 RCT_EXPORT_METHOD(setMode:(NSString *)modeName) {

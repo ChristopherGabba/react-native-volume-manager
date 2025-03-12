@@ -10,6 +10,7 @@ import type {
   AVAudioSessionCompatibleModes,
   AVAudioSessionRouteSharingPolicy,
   AVAudioSessionCategoryOptions,
+  AVAudioSessionStatus,
 } from './types';
 
 // Track if warning has been shown
@@ -90,7 +91,13 @@ export async function configureAVAudioSession<
   prefersInterruptionOnRouteDisconnect?: boolean;
   allowHapticsAndSystemSoundsDuringRecording?: boolean;
 }): Promise<void> {
+  warnOnWeb();
+  return undefined;
+}
 
+export async function getAVAudioSessionStatus(): Promise<
+  AVAudioSessionStatus | undefined
+> {
   warnOnWeb();
   return undefined;
 }
