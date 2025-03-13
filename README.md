@@ -126,8 +126,10 @@ await VolumeManager.configureAVAudioSession({
     prefersNoInterruptionFromSystemAlerts: true
 })
 
-// Activate or deactivate the audio session
+// Activate the session
 await VolumeManager.setActive(true, true); // Activate async
+
+// Deactive session when complete
 await VolumeManager.setActive(false, true); // Deactivate async, non-blocking
 
 ```
