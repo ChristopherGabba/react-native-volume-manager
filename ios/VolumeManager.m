@@ -270,6 +270,63 @@ RCT_EXPORT_METHOD(setActive:(BOOL)active async:(BOOL)async) {
   }
 }
 
+RCT_EXPORT_METHOD(activateAVAudioSession:(BOOL)restorePreviousSessionOnDeactivation
+                                        async:(BOOL)async) {
+  
+  AVAudioSessionSetActiveOptions options = 0;
+  if (restorePreviousSessionOnDeactivation) {
+    options = AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation;
+  }
+  
+if (async) {
+    dispatch_async(
+                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                     AVAudioSession *session = [AVAudioSession sharedInstance];
+                     NSError *error = nil;
+                     [session setActive:YES 
+                            withOptions:options 
+                                 error:&error];
+                     if (error) {
+                       NSLog(@"Error activating audio session: %@", error.localizedDescription);
+                     }
+                   });
+  } else {
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    [session setActive:YES 
+           withOptions:options 
+                error:&error];
+    if (error) {
+      NSLog(@"Error activating audio session: %@", error.localizedDescription);
+    }
+  }
+}
+
+RCT_EXPORT_METHOD(deactivateAVAudioSession:(BOOL)async) {
+  if (async) {
+    dispatch_async(
+                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                     AVAudioSession *session = [AVAudioSession sharedInstance];
+                     NSError *error = nil;
+                     [session setActive:NO 
+                            withOptions:0 
+                                 error:&error];
+                     if (error) {
+                       NSLog(@"Error deactivating audio session: %@", error.localizedDescription);
+                     }
+                   });
+  } else {
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    [session setActive:NO 
+           withOptions:0 
+                error:&error];
+    if (error) {
+      NSLog(@"Error deactivating audio session: %@", error.localizedDescription);
+    }
+  }
+}
+
 RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
                   mode:(NSString *)modeName
                   policy:(NSString *)policyName

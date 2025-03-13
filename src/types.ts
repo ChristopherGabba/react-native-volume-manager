@@ -28,6 +28,28 @@ export type RingMuteSwitchEventCallback = (
  */
 export type setCheckIntervalType = (newInterval: number) => void;
 
+export type AVAudioSessionActivationOptions = {
+  /**
+   * Restores the previous AVAudioSession when this one ends. For example, if you are listening to music in the backgorund
+   * and this audio session starts, it will pause the music. When you call `inactivateAudioSession` it will play the music again.
+   * @default true
+   */
+  restorePreviousSessionOnDeactivation?: boolean;
+  /**
+   * Run the function asyncronously (non blocking).
+   * @default true
+   */
+  runAsync?: boolean;
+}
+
+export type AVAudioSessionDeactivationOptions = {
+  /**
+   * Run the function asyncronously (non blocking).
+   * @default true
+   */
+  runAsync?: boolean;
+}
+
 export enum AVAudioSessionCategory {
   /**
    * This category is also appropriate for “play-along” apps, such as a virtual piano that a user plays while the Music app is playing. When you use this category, audio from other apps mixes with your audio (The MixWithOthers is set under the hood). Screen locking and the Silent switch (on iPhone, the Ring/Silent switch) silence your audio.

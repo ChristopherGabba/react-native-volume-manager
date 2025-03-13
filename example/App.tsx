@@ -50,33 +50,37 @@ export default function App() {
       // A good way to test if this is working is to play some song from spotify or podcasts
       // Run the app, right when the app opens, it will set the audio session, that audio session will quiet
       // For 5 seconds, then return when the session ends.
-      const initialStatus = await VolumeManager.getAVAudioSessionStatus();
-      console.log(
-        'AVAudioSessionStatus Before Setting:',
-        JSON.stringify(initialStatus, null, 4)
-      );
+      try {
+        const initialStatus = await VolumeManager.getAVAudioSessionStatus();
+        console.log(
+          'AVAudioSessionStatus Before Setting:',
+          JSON.stringify(initialStatus, null, 4)
+        );
 
-      await VolumeManager.configureAVAudioSession({
-        category: AVAudioSessionCategory.Playback,
-        mode: AVAudioSessionMode.MoviePlayback,
-      });
+        await VolumeManager.configureAVAudioSession({
+          category: AVAudioSessionCategory.Playback,
+          mode: AVAudioSessionMode.MoviePlayback,
+        });
 
-      const endingStatus = await VolumeManager.getAVAudioSessionStatus();
+        const endingStatus = await VolumeManager.getAVAudioSessionStatus();
 
-      console.log(
-        'AVAudioSessionStatus After Setting',
-        JSON.stringify(endingStatus, null, 4)
-      );
-      /**
-       * Activate session to test if the background mutes or not.
-       */
-      VolumeManager.setActive(true, true);
+        console.log(
+          'AVAudioSessionStatus After Setting',
+          JSON.stringify(endingStatus, null, 4)
+        );
+        /**
+         * Activate session to test if the background mutes or not.
+         */
+        await VolumeManager.activateAVAudioSession();
 
-      await delay(5000);
-      /**
-       * De-activate session after five seconds to see if audio restores
-       */
-      VolumeManager.setActive(false, true);
+        await delay(5000);
+        /**
+         * De-activate session after five seconds to see if audio restores
+         */
+        await VolumeManager.deactivateAVAudioSession();
+      } catch (error) {
+        console.log('Error testing audioSession functions', error);
+      }
     })();
   }, []);
 

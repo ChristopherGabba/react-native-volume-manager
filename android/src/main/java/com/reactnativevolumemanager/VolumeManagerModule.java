@@ -195,6 +195,11 @@ public class VolumeManagerModule extends ReactContextBaseJavaModule implements A
   }
 
   @ReactMethod
+  public void activateAVAudioSession(final Boolean restorePreviousSessionOnDeactivation, final Boolean runAsync) {
+    // no op
+  }
+
+  @ReactMethod
   public void setCategory(final String category, final Boolean mixWithOthers) {
     // no op
   }

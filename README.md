@@ -126,11 +126,11 @@ await VolumeManager.configureAVAudioSession({
     prefersNoInterruptionFromSystemAlerts: true
 })
 
-// Activate the session
-await VolumeManager.setActive(true, true); // Activate async
+// Activate the session (async by default)
+await VolumeManager.activateAVAudioSession(); 
 
-// Deactive session when complete
-await VolumeManager.setActive(false, true); // Deactivate async, non-blocking
+// Deactive session when complete (async by default)
+await VolumeManager.deactivateAVAudioSession(); 
 
 ```
 
@@ -352,6 +352,39 @@ Adds a listener that will be called when the device's volume changes.
 
 ## iOS-only Methods
 
+#### **`activateAVAudioSession({ restorePreviousSessionOnDeactivation: boolean, runAsync: true}): Promise<void>`**
+
+Activates the audio session. 
+
+- **Parameters**:
+  - `restorePreviousSessionOnDeactivation` (`boolean`): Setting this to true reactivates any sessions that were interrupted by this one.
+  - `runAsync` (`boolean`): If `true`, the action is performed asynchronously.
+
+<br/>
+
+- **Example**:
+  ```typescript
+  // Activate audio session
+  await VolumeManager.activateAVAudioSession();
+  ```
+
+
+#### **`deactivateAVAudioSession({ runAsync: true}): Promise<void>`**
+
+Deactivates the audio session.
+
+- **Parameters**:
+  - `runAsync` (`boolean`): If `true`, the action is performed asynchronously.
+
+<br/>
+
+- **Example**:
+  ```typescript
+  // Activate audio session
+  await VolumeManager.deactivateAVAudioSession();
+  ```
+
+
 #### **`configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, categoryOptions: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
 
 Configures the AVAudioSession category with compatible AVAudioSession modes and allows further customization of audio session properties.
@@ -409,30 +442,6 @@ Returns the current status of the AVAudioSession.
   ```
 
 
-#### **`setActive(value: boolean, async: boolean): Promise<void>`**
-
-Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
-
-- **Parameters**:
-  - `value` (`boolean`): Whether to activate (`true`) or deactivate (`false`) the audio session.
-  - `async` (`boolean`): If `true`, the action is performed asynchronously.
-
-<br/>
-
-- **Description**:
-  This method either activates or deactivates the audio session. Deactivating the session will also restore any interrupted sessions.
-
-<br/>
-
-- **Example**:
-  ```typescript
-  // Activate audio session
-  await VolumeManager.setActive(true, true);
-  
-  // Deactivate audio session
-  await VolumeManager.setActive(false, false);
-  ```
-
 #### **`setNativeSilenceCheckInterval(value: number)`**
 
 Sets the interval at which the native system checks the state of the silent switch.
@@ -483,9 +492,33 @@ Adds a listener that will be called when the silent switch state changes.
 
 
 
-#### **Deprecated Method (Replaced with `configureAVAudioSession`)**
+### **Deprecated Methods**
 
----
+#### **`setActive(value: boolean, async: boolean): Promise<void>`**
+
+Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
+
+- **Parameters**:
+  - `value` (`boolean`): Whether to activate (`true`) or deactivate (`false`) the audio session.
+  - `async` (`boolean`): If `true`, the action is performed asynchronously.
+
+<br/>
+
+- **Description**:
+  This method either activates or deactivates the audio session. Deactivating the session will also restore any interrupted sessions.
+
+<br/>
+
+- **Example**:
+  ```typescript
+  // Activate audio session
+  await VolumeManager.setActive(true, true);
+  
+  // Deactivate audio session
+  await VolumeManager.setActive(false, false);
+  ```
+
+
 
 #### **`setCategory(value: AVAudioSessionCategory, mixWithOthers?: boolean): Promise<void>`**
 

@@ -78,6 +78,20 @@ export async function setMode(_value: AVAudioSessionMode): Promise<void> {
   return undefined;
 }
 
+export async function activateAVAudioSession({}: {
+  restorePreviousSessionOnDeactivation: boolean;
+  runAsync: boolean;
+}): Promise<void> {
+  warnOnWeb();
+  return undefined;
+}
+
+export async function deactivateAVAudioSession({}: {
+  runAsync: boolean;
+}): Promise<void> {
+  warnOnWeb();
+  return undefined;
+}
 
 export async function configureAVAudioSession<
   T extends AVAudioSessionCategory,

@@ -18,6 +18,8 @@ import {
   AVAudioSessionCompatibleModes,
   AVAudioSessionStatus,
   AVAudioSessionCompatibleCategoryOptions,
+  AVAudioSessionDeactivationOptions,
+  AVAudioSessionActivationOptions,
 } from './types';
 import { AVAudioSessionRouteSharingPolicy } from './types';
 
@@ -109,8 +111,8 @@ export async function setRingerMode(
  *  * @deprecated instead use:
  * ```tsx
  *   await configureAVAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await setActive(true,true)
- * ``` 
+ *   await activateAVAudioSession()
+ * ```
  * iOS only. Enables or disables the audio session. When enabled, the session's category is set to ambient, allowing the audio from this session to mix with other audio currently playing on the device.
  * @param {boolean} [enabled=true] - Whether to enable or disable the audio session.
  * @param {boolean} [async=true] - Whether to perform the operation asynchronously. When set to true, this function will not block the UI thread.
@@ -124,6 +126,7 @@ export async function enable(
 }
 
 /**
+ * @deprecated replaced with `activateAVAudioSession` and `deactivateAVAudioSession`
  * iOS only. Activates or deactivates the audio session. Does not change the audio session's category. When the session is deactivated, other audio sessions that had been interrupted by this one are reactivated and notified.
  * @param {boolean} [value=true] - Whether to activate or deactivate the audio session.
  * @param {boolean} [async=true] - Whether to perform the operation asynchronously. When set to true, this function will not block the JavaScript thread.
@@ -135,6 +138,40 @@ export async function setActive(
 ): Promise<void> {
   if (!isAndroid) {
     return VolumeManagerNativeModule.setActive(value, async);
+  }
+  return undefined;
+}
+
+/**
+ * Activates the AVAudioSession.
+ * @platform iOS
+ * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
+ */
+export async function activateAVAudioSession(
+  options: AVAudioSessionActivationOptions = {
+    restorePreviousSessionOnDeactivation: true,
+    runAsync: true,
+  }
+): Promise<void> {
+  if (!isAndroid) {
+    return VolumeManagerNativeModule.activateAVAudioSession(
+      options.restorePreviousSessionOnDeactivation,
+      options.runAsync
+    );
+  }
+  return undefined;
+}
+
+/**
+ * Activates the AVAudioSession.
+ * @platform iOS
+ * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
+ */
+export async function deactivateAVAudioSession(
+  options: AVAudioSessionDeactivationOptions = { runAsync: true }
+): Promise<void> {
+  if (!isAndroid) {
+    return VolumeManagerNativeModule.deactivateAVAudioSession(options.runAsync);
   }
   return undefined;
 }
@@ -155,7 +192,7 @@ export async function setActive(
  *     categoryOptions: [AVAudioSessionCategoryOptions.MixWithOthers],
  *     prefersNoInterruptionFromSystemAlerts: true
  *   })
- * 
+ *
  *  // For controlling a video session
  *   await configureAVAudioSession({
  *     category: AVAudioSessionCategory.Playback,
@@ -291,9 +328,9 @@ export async function setMode(value: AVAudioSessionMode): Promise<void> {
  * @deprecated instead use:
  * ```tsx
  *   await configureAVAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await setActive(true,true)
- * ``` 
- * 
+ *   await activateAVAudioSession()
+ * ```
+ *
  * Enables or disables the VolumeManager in silent mode. iOS only.
  * @param {boolean} [enabled=true] - Enable or disable the VolumeManager in silent mode
  * @returns {Promise<void>} - Resolves when the operation has finished
@@ -469,6 +506,8 @@ export const VolumeManager = {
   checkDndAccess,
   requestDndAccess,
   enable,
+  activateAVAudioSession,
+  deactivateAVAudioSession,
   configureAVAudioSession,
   getAVAudioSessionStatus,
   setActive,
