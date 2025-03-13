@@ -11,9 +11,12 @@ import {
   Button,
   Alert,
 } from 'react-native';
-import { VolumeManager } from '../src/module';
-import { useRingerMode } from '../src/hooks';
-import { RINGER_MODE, RingerSilentStatus } from '../src/types';
+import {
+  VolumeManager,
+  useRingerMode,
+  RINGER_MODE,
+  RingerSilentStatus,
+} from 'react-native-volume-manager';
 import Slider from '@react-native-community/slider';
 
 const modeText = {
