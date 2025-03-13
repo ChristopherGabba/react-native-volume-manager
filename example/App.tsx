@@ -16,6 +16,8 @@ import {
   useRingerMode,
   RINGER_MODE,
   RingerSilentStatus,
+  AVAudioSessionCategory,
+  AVAudioSessionMode,
 } from 'react-native-volume-manager';
 import Slider from '@react-native-community/slider';
 
@@ -28,6 +30,8 @@ const modeText = {
 function nullishBooleanToString(value: boolean | undefined) {
   return value === undefined ? 'unset' : value ? 'YES' : 'NO';
 }
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function App() {
   const [currentSystemVolume, setReportedSystemVolume] = useState<number>(0);
@@ -42,9 +46,38 @@ export default function App() {
   }, [hideUI]);
 
   useEffect(() => {
-    VolumeManager.getAVAudioSessionStatus().then((status) => {
-      console.log('AVAudioSessionStatus', JSON.stringify(status, null, 4));
-    });
+    (async function testAudioSession() {
+      // A good way to test if this is working is to play some song from spotify or podcasts
+      // Run the app, right when the app opens, it will set the audio session, that audio session will quiet
+      // For 5 seconds, then return when the session ends.
+      const initialStatus = await VolumeManager.getAVAudioSessionStatus();
+      console.log(
+        'AVAudioSessionStatus Before Setting:',
+        JSON.stringify(initialStatus, null, 4)
+      );
+
+      await VolumeManager.configureAVAudioSession({
+        category: AVAudioSessionCategory.Playback,
+        mode: AVAudioSessionMode.MoviePlayback,
+      });
+
+      const endingStatus = await VolumeManager.getAVAudioSessionStatus();
+
+      console.log(
+        'AVAudioSessionStatus After Setting',
+        JSON.stringify(endingStatus, null, 4)
+      );
+      /**
+       * Activate session to test if the background mutes or not.
+       */
+      VolumeManager.setActive(true, true);
+
+      await delay(5000);
+      /**
+       * De-activate session after five seconds to see if audio restores
+       */
+      VolumeManager.setActive(false, true);
+    })();
   }, []);
 
   useEffect(() => {
