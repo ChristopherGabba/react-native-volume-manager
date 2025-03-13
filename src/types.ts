@@ -31,28 +31,28 @@ export type setCheckIntervalType = (newInterval: number) => void;
 export enum AVAudioSessionCategory {
   /**
    * This category is also appropriate for “play-along” apps, such as a virtual piano that a user plays while the Music app is playing. When you use this category, audio from other apps mixes with your audio (The MixWithOthers is set under the hood). Screen locking and the Silent switch (on iPhone, the Ring/Silent switch) silence your audio.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, SpokenAudio
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * MixWithOthers, AllowBluetoothA2DP
-   * 
+   *
    */
   Ambient = 'Ambient',
   /**
    * Your audio is silenced by screen locking and by the Silent switch (called the Ring/Silent switch on iPhone).
    *
    * By default, using this category implies that your app’s audio is nonmixable—activating your session will interrupt any other audio sessions which are also nonmixable. To allow mixing, use the ambient category instead.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, SpokenAudio
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * AllowBluetoothA2DP
    */
   SoloAmbient = 'SoloAmbient',
@@ -60,13 +60,13 @@ export enum AVAudioSessionCategory {
    * When using this category, your app audio continues with the Silent switch set to silent or when the screen locks. (The switch is called the Ring/Silent switch on iPhone.) To continue playing audio when your app transitions to the background (for example, when the screen locks), add the audio value to the UIBackgroundModes key in your information property list file.
    *
    * By default, using this category implies that your app’s audio is nonmixable—activating your session will interrupt any other audio sessions which are also nonmixable. To allow mixing for this category, use the mixWithOthers option.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, MoviePlayback, SpokenAudio, Measurement
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * MixWithOthers, DuckOthers, InterruptSpokenAudioAndMixWithOthers, AllowBluetoothA2DP
    */
   Playback = 'Playback',
@@ -78,15 +78,15 @@ export enum AVAudioSessionCategory {
    * The user must grant permission for audio recording.
    *
    * This category supports the mirrored version of Airplay. However, AirPlay mirroring will be disabled if the AVAudioSessionModeVoiceChat mode is used with this category.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, SpokenAudio, Measurement, VoiceChat, VideoChat, GameChat, VideoRecording
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * MixWithOthers, DuckOthers, InterruptSpokenAudioAndMixWithOthers, AllowBluetooth, AllowBluetoothA2DP, AllowAirPlay, DefaultToSpeaker, OverrideMutedMicrophoneInterruption
-   * 
+   *
    */
   PlayAndRecord = 'PlayAndRecord',
   /**
@@ -94,13 +94,13 @@ export enum AVAudioSessionCategory {
    * To continue recording audio when your app transitions to the background (for example, when the screen locks), add the audio value to the UIBackgroundModes key in your information property list file.
    *
    * The user must grant permission for audio recording.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, SpokenAudio, Measurement, VideoRecording, VideoChat
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * MixWithOthers, DuckOthers, InterruptSpokenAudioAndMixWithOthers, AllowBluetoothA2DP
    */
   Record = 'Record',
@@ -108,15 +108,15 @@ export enum AVAudioSessionCategory {
    * This category can be used for input, output, or both. For example, use this category to route audio to both a USB device and a set of headphones. Use of this category requires a more detailed knowledge of, and interaction with, the capabilities of the available audio routes.
    * @important
    * Route changes can invalidate part or all of your multi-route configuration. When using the multiRoute category, it is essential that you register to observe routeChangeNotification notifications and update your configuration as necessary.
-   * 
+   *
    * **Compatible Modes**:
-   * 
+   *
    * Default, SpokenAudio
-   * 
+   *
    * **Compatible Cateogory Options**:
-   * 
+   *
    * MixWithOthers, DuckOthers, InterruptSpokenAudioAndMixWithOthers
-   * 
+   *
    */
   MultiRoute = 'MultiRoute',
 }
@@ -318,17 +318,16 @@ export type AVAudioSessionCompatibleModes = {
  * Each array represents a valid set of options that can be used together.
  */
 export type AVAudioSessionCompatibleCategoryOptions = {
-  Ambient: [
+  Ambient:
     | [
         AVAudioSessionCategoryOptions.MixWithOthers,
         AVAudioSessionCategoryOptions.AllowBluetoothA2DP
       ]
-    | [AVAudioSessionCategoryOptions.MixWithOthers]
-  ];
+    | [AVAudioSessionCategoryOptions.MixWithOthers];
 
-  SoloAmbient: [[AVAudioSessionCategoryOptions.AllowBluetoothA2DP] | []];
+  SoloAmbient: [AVAudioSessionCategoryOptions.AllowBluetoothA2DP] | [];
 
-  Playback: [
+  Playback:
     | [
         AVAudioSessionCategoryOptions.MixWithOthers,
         AVAudioSessionCategoryOptions.DuckOthers,
@@ -364,12 +363,11 @@ export type AVAudioSessionCompatibleCategoryOptions = {
       ]
     | [AVAudioSessionCategoryOptions.MixWithOthers]
     | [AVAudioSessionCategoryOptions.AllowBluetoothA2DP]
-    | []
-  ];
+    | [];
 
-  Record: [[AVAudioSessionCategoryOptions.AllowBluetooth] | []];
+  Record: [AVAudioSessionCategoryOptions.AllowBluetooth] | [];
 
-  PlayAndRecord: [
+  PlayAndRecord:
     | [
         AVAudioSessionCategoryOptions.MixWithOthers,
         AVAudioSessionCategoryOptions.DuckOthers,
@@ -568,10 +566,9 @@ export type AVAudioSessionCompatibleCategoryOptions = {
       ]
     | [AVAudioSessionCategoryOptions.AllowBluetoothA2DP]
     | [AVAudioSessionCategoryOptions.AllowAirPlay]
-    | []
-  ];
+    | [];
 
-  MultiRoute: [
+  MultiRoute:
     | [
         AVAudioSessionCategoryOptions.MixWithOthers,
         AVAudioSessionCategoryOptions.DuckOthers,
@@ -586,10 +583,8 @@ export type AVAudioSessionCompatibleCategoryOptions = {
         AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
       ]
     | [AVAudioSessionCategoryOptions.MixWithOthers]
-    | []
-  ];
+    | [];
 };
-
 
 export type AVAudioSessionStatus = {
   isOtherAudioPlaying: boolean;
