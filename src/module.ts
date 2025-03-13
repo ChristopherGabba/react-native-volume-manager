@@ -137,10 +137,29 @@ export async function setActive(
 /**
  * Configures an AVAudioSession with the specified category, mode, and additional options.
  * This method is only available on iOS and ensures compatibility between categories and modes.
- *
  * @platform iOS
  * @returns {Promise<void>}
  * @see {@link https://developer.apple.com/documentation/avfaudio/avaudiosession|Apple AVAudioSession Documentation}
+ * @example
+ * ```tsx
+ *   // For recording a video
+ *   await configureAVAudioSession({
+ *     category: AVAudioSessionCategory.PlayAndRecord,
+ *     mode: AVAudioSessionMode.VideoRecording,
+ *     policy: AVAudioSessionPolicy.Default,
+ *     categoryOptions: [AVAudioSessionCategoryOptions.MixWithOthers],
+ *     prefersNoInterruptionFromSystemAlerts: true
+ *   })
+ * 
+ *  // For controlling a video session
+ *   await configureAVAudioSession({
+ *     category: AVAudioSessionCategory.Playback,
+ *     mode: AVAudioSessionMode.MediaPlayback,
+ *     policy: AVAudioSessionPolicy.Default,
+ *     categoryOptions: [AVAudioSessionCategoryOptions.MixWithOthers],
+ *     prefersNoInterruptionFromSystemAlerts: true
+ *   })
+ * ```
  */
 export async function configureAVAudioSession<
   T extends AVAudioSessionCategory,
@@ -179,7 +198,7 @@ export async function configureAVAudioSession<
    *
    * @default [AVAudioSessionCategoryOptions.MixWithOthers,AVAudioSessionCategoryOptions.AllowBluetooth]
    */
-  categoryOptions: N;
+  categoryOptions?: N;
   /**
    * If true, prefers no interruptions from system alerts (iOS 14.0+).
    * @default true
