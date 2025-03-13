@@ -374,7 +374,7 @@ Activates or deactivates the audio session. Deactivating the session reactivates
   await VolumeManager.setActive(false, false);
   ```
 
-#### **`configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, options: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
+#### **`configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, categoryOptions: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
 
 Configures the AVAudioSession category with compatible AVAudioSession modes and allows further customization of audio session properties.
 

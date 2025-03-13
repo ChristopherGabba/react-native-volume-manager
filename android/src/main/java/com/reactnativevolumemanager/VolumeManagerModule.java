@@ -200,10 +200,10 @@ public class VolumeManagerModule extends ReactContextBaseJavaModule implements A
   }
 
   @ReactMethod
-  public void configureAVAudioSession(final String categoryName,
-      final String modeName,
-      final String policyName,
-      final ReadableArray optionsArray,
+  public void configureAVAudioSession(final String category,
+      final String mode,
+      final String policy,
+      final ReadableArray categoryOptions,
       final boolean prefersNoInterruptionFromSystemAlerts,
       final boolean prefersInterruptionOnRouteDisconnect,
       final boolean allowHapticsAndSystemSoundsDuringRecording) {

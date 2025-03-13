@@ -9,8 +9,8 @@ import type {
   VolumeResult,
   AVAudioSessionCompatibleModes,
   AVAudioSessionRouteSharingPolicy,
-  AVAudioSessionCategoryOptions,
   AVAudioSessionStatus,
+  AVAudioSessionCompatibleCategoryOptions,
 } from './types';
 
 // Track if warning has been shown
@@ -81,12 +81,13 @@ export async function setMode(_value: AVAudioSessionMode): Promise<void> {
 
 export async function configureAVAudioSession<
   T extends AVAudioSessionCategory,
-  M extends AVAudioSessionCompatibleModes[T]
+  M extends AVAudioSessionCompatibleModes[T],
+  N extends AVAudioSessionCompatibleCategoryOptions[T]
 >({}: {
   category: T;
   mode: M;
   policy?: AVAudioSessionRouteSharingPolicy;
-  options?: AVAudioSessionCategoryOptions[];
+  categoryOptions?: N;
   prefersNoInterruptionFromSystemAlerts?: boolean;
   prefersInterruptionOnRouteDisconnect?: boolean;
   allowHapticsAndSystemSoundsDuringRecording?: boolean;

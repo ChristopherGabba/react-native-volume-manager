@@ -38,11 +38,11 @@ export default function App() {
     VolumeManager.showNativeVolumeUI({ enabled: !hideUI });
   }, [hideUI]);
 
-  useEffect(()=>{
-    VolumeManager.getAVAudioSessionStatus().then((status)=>{
-      console.log("AVAudioSessionStatus", JSON.stringify(status, null, 4))
-    })
-  },[])
+  useEffect(() => {
+    VolumeManager.getAVAudioSessionStatus().then((status) => {
+      console.log('AVAudioSessionStatus', JSON.stringify(status, null, 4));
+    });
+  }, []);
 
   useEffect(() => {
     VolumeManager.getVolume().then((result) => {

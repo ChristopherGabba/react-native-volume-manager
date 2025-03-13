@@ -17,11 +17,9 @@ import {
   VolumeResult,
   AVAudioSessionCompatibleModes,
   AVAudioSessionStatus,
+  AVAudioSessionCompatibleCategoryOptions,
 } from './types';
-import {
-  AVAudioSessionRouteSharingPolicy,
-  AVAudioSessionCategoryOptions,
-} from './types';
+import { AVAudioSessionRouteSharingPolicy } from './types';
 
 /**
  * Error message when 'react-native-volume-manager' package is not linked properly
@@ -146,15 +144,13 @@ export async function setActive(
  */
 export async function configureAVAudioSession<
   T extends AVAudioSessionCategory,
-  M extends AVAudioSessionCompatibleModes[T]
+  M extends AVAudioSessionCompatibleModes[T],
+  N extends AVAudioSessionCompatibleCategoryOptions[T]
 >({
   category,
   mode,
   policy = AVAudioSessionRouteSharingPolicy.Default,
-  options = [
-    AVAudioSessionCategoryOptions.MixWithOthers,
-    AVAudioSessionCategoryOptions.AllowBluetooth,
-  ],
+  categoryOptions,
   prefersNoInterruptionFromSystemAlerts = true,
   prefersInterruptionOnRouteDisconnect = true,
   allowHapticsAndSystemSoundsDuringRecording = true,
@@ -179,11 +175,11 @@ export async function configureAVAudioSession<
   /**
    * @type {Array<"MixWithOthers" | "AllowBluetooth" | "AllowBluetoothA2DP" | "AllowAirPlay" | "DuckOthers" | "DefaultToSpeaker" | "InterruptSpokenAudioAndMixWithOthers" | "OverrideMutedMicrophoneInterruption">}
    *
-   * Note that these can kind of act funny. iOS has default Values that are sometimes placed within the array of options due to various modes and categories preset.
+   * The category options are kind of tricky. You can only set category options that are compatible with each category. The TS compiler should limit you to only combinations that are possible.
    *
    * @default [AVAudioSessionCategoryOptions.MixWithOthers,AVAudioSessionCategoryOptions.AllowBluetooth]
    */
-  options?: AVAudioSessionCategoryOptions[];
+  categoryOptions: N;
   /**
    * If true, prefers no interruptions from system alerts (iOS 14.0+).
    * @default true
@@ -205,7 +201,7 @@ export async function configureAVAudioSession<
       category,
       mode,
       policy,
-      options,
+      categoryOptions,
       prefersNoInterruptionFromSystemAlerts,
       prefersInterruptionOnRouteDisconnect,
       allowHapticsAndSystemSoundsDuringRecording
