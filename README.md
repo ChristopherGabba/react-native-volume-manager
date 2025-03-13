@@ -97,13 +97,39 @@ This section provides methods related to AVAudioSession on iOS. For example:
 ```tsx
 import { VolumeManager } from 'react-native-volume-manager';
 
-// Enable or disable iOS AudioSession
-VolumeManager.enable(true, true); // Enable async
-VolumeManager.enable(false, true); // Disable async, non-blocking
+// Configure the audio session for some specific use case
+
+// For recording a video with a camera 
+await VolumeManager.configureAVAudioSession({
+    category: AVAudioSessionCategory.PlayAndRecord,
+    mode: AVAudioSessionMode.VideoRecording,
+    policy: AVAudioSessionPolicy.Default,
+    categoryOptions: [AVAudioSessionCategoryOptions.MixWithOthers],
+    prefersNoInterruptionFromSystemAlerts: true
+})
+  
+// Or for controlling a video session
+await VolumeManager.configureAVAudioSession({
+    category: AVAudioSessionCategory.Playback,
+    mode: AVAudioSessionMode.MediaPlayback,
+    policy: AVAudioSessionPolicy.Default,
+    categoryOptions: [AVAudioSessionCategoryOptions.MixWithOthers],
+    prefersNoInterruptionFromSystemAlerts: true
+})
+
+// Or for enabling the audio session and ignoring the silent switch 
+// (note have to activate the session after configuration)
+await VolumeManager.configureAVAudioSession({
+    category: AVAudioSessionCategory.Playback,
+    mode: AVAudioSessionMode.Default,
+    policy: AVAudioSessionPolicy.Default,
+    prefersNoInterruptionFromSystemAlerts: true
+})
 
 // Activate or deactivate the audio session
-VolumeManager.setActive(true, true); // Activate async
-VolumeManager.setActive(false, true); // Deactivate async, non-blocking
+await VolumeManager.setActive(true, true); // Activate async
+await VolumeManager.setActive(false, true); // Deactivate async, non-blocking
+
 ```
 
 ## iOS Mute Switch Listener
@@ -324,56 +350,6 @@ Adds a listener that will be called when the device's volume changes.
 
 ## iOS-only Methods
 
-
-#### **`enable(enabled: boolean, async: boolean): Promise<void>`**
-
-Enable or disable the audio session.
-
-- **Parameters**:
-  - `enabled` (`boolean`): Whether to enable (`true`) or disable (`false`) the audio session.
-  - `async` (`boolean`): Whether the action should be performed asynchronously.
-
-<br/>
-
-- **Description**:
-  Enabling the audio session sets the session's category to `Ambient`, allowing it to mix with other audio from other apps. Disabling it will prevent audio mixing.
-
-<br/>
-
-- **Example**:
-  ```typescript
-  // Enable audio session
-  await VolumeManager.enable(true, true);  
-  
-  // Disable audio session
-  await VolumeManager.enable(false, false); 
-  ```
-
-
-#### **`setActive(value: boolean, async: boolean): Promise<void>`**
-
-Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
-
-- **Parameters**:
-  - `value` (`boolean`): Whether to activate (`true`) or deactivate (`false`) the audio session.
-  - `async` (`boolean`): If `true`, the action is performed asynchronously.
-
-<br/>
-
-- **Description**:
-  This method either activates or deactivates the audio session. Deactivating the session will also restore any interrupted sessions.
-
-<br/>
-
-- **Example**:
-  ```typescript
-  // Activate audio session
-  await VolumeManager.setActive(true, true);
-  
-  // Deactivate audio session
-  await VolumeManager.setActive(false, false);
-  ```
-
 #### **`configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, categoryOptions: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
 
 Configures the AVAudioSession category with compatible AVAudioSession modes and allows further customization of audio session properties.
@@ -430,27 +406,29 @@ Returns the current status of the AVAudioSession.
   console.log("Current AVAudioSessionCategory is", category)
   ```
 
-#### **`enableInSilenceMode(value: boolean): Promise<void>`**
 
-If `value` is true, this function allows your app to play audio even when the device is in silent mode. When `value` is false, audio will not play in silent mode. This sets the AVAudioSessionCategory to `Playback` under the hood.
+#### **`setActive(value: boolean, async: boolean): Promise<void>`**
+
+Activates or deactivates the audio session. Deactivating the session reactivates any sessions that were interrupted by this one.
 
 - **Parameters**:
-  - `value` (`boolean`): If `true`, audio will play even when the device is in silent mode. If `false`, it will not.
+  - `value` (`boolean`): Whether to activate (`true`) or deactivate (`false`) the audio session.
+  - `async` (`boolean`): If `true`, the action is performed asynchronously.
 
 <br/>
 
 - **Description**:
-  Enables or disables audio playback in silent mode. Use this if you want your app to play audio regardless of the device’s silent switch.
+  This method either activates or deactivates the audio session. Deactivating the session will also restore any interrupted sessions.
 
 <br/>
 
 - **Example**:
   ```typescript
-  // Enable audio in silent mode
-  await VolumeManager.enableInSilenceMode(true);  
+  // Activate audio session
+  await VolumeManager.setActive(true, true);
   
-  // Disable audio in silent mode
-  await VolumeManager.enableInSilenceMode(false); 
+  // Deactivate audio session
+  await VolumeManager.setActive(false, false);
   ```
 
 #### **`setNativeSilenceCheckInterval(value: number)`**
@@ -527,8 +505,6 @@ Sets the category for the AVAudioSession in your iOS app. `mixWithOthers` is an 
   await VolumeManager.setCategory(AVAudioSessionCategory.Playback, true);
   ```
 
-
-
 #### **`setMode(mode: AVAudioSessionMode): Promise<void>`**
 
 Sets the mode for the AVAudioSession in your iOS app.
@@ -546,6 +522,53 @@ Sets the mode for the AVAudioSession in your iOS app.
 - **Example**:
   ```typescript
   await VolumeManager.setMode(AVAudioSessionMode.VideoRecording);
+  ```
+
+#### **`enable(enabled: boolean, async: boolean): Promise<void>`**
+
+Enable or disable the audio session.
+
+- **Parameters**:
+  - `enabled` (`boolean`): Whether to enable (`true`) or disable (`false`) the audio session.
+  - `async` (`boolean`): Whether the action should be performed asynchronously.
+
+<br/>
+
+- **Description**:
+  Enabling the audio session sets the session's category to `Ambient`, allowing it to mix with other audio from other apps. Disabling it will prevent audio mixing.
+
+<br/>
+
+- **Example**:
+  ```typescript
+  // Enable audio session
+  await VolumeManager.enable(true, true);  
+  
+  // Disable audio session
+  await VolumeManager.enable(false, false); 
+  ```
+
+#### **`enableInSilenceMode(value: boolean): Promise<void>`**
+
+If `value` is true, this function allows your app to play audio even when the device is in silent mode. When `value` is false, audio will not play in silent mode. This sets the AVAudioSessionCategory to `Playback` under the hood and activates the session.
+
+- **Parameters**:
+  - `value` (`boolean`): If `true`, audio will play even when the device is in silent mode. If `false`, it will not.
+
+<br/>
+
+- **Description**:
+  Enables or disables audio playback in silent mode. Use this if you want your app to play audio regardless of the device’s silent switch.
+
+<br/>
+
+- **Example**:
+  ```typescript
+  // Enable audio in silent mode
+  await VolumeManager.enableInSilenceMode(true);  
+  
+  // Disable audio in silent mode
+  await VolumeManager.enableInSilenceMode(false); 
   ```
 
 ---
