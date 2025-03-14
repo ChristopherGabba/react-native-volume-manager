@@ -117,9 +117,7 @@ export async function activateAudioSession(
   }
 ): Promise<void> {
   if (!isAndroid) {
-    return VolumeManagerNativeModule.activateAudioSession(
-      options.runAsync
-    );
+    return VolumeManagerNativeModule.activateAudioSession(options.runAsync);
   }
   return undefined;
 }
@@ -130,7 +128,10 @@ export async function activateAudioSession(
  * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
  */
 export async function deactivateAudioSession(
-  options: AVAudioSessionDeactivationOptions = { runAsync: true }
+  options: AVAudioSessionDeactivationOptions = {
+    restorePreviousSessionOnDeactivation: true,
+    runAsync: true,
+  }
 ): Promise<void> {
   if (!isAndroid) {
     return VolumeManagerNativeModule.deactivateAudioSession(
