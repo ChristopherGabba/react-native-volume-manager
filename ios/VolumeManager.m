@@ -235,19 +235,12 @@ RCT_EXPORT_METHOD(getVolume:(RCTPromiseResolveBlock)resolve
 }
 
 
-RCT_EXPORT_METHOD(activateAudioSession:(BOOL)restorePreviousSessionOnDeactivation
-                                        async:(BOOL)async) {
-  
-    AVAudioSessionSetActiveOptions options = 0;
-    if (restorePreviousSessionOnDeactivation) {
-        options |= AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation;
-    }
+RCT_EXPORT_METHOD(activateAudioSession:(BOOL)async) {
   
     void (^activateBlock)(void) = ^{
         AVAudioSession *session = [AVAudioSession sharedInstance];
         NSError *error = nil;
         [session setActive:YES
-               withOptions:options
                      error:&error];
         if (error) {
             NSLog(@"Error activating audio session: %@", error.localizedDescription);
