@@ -129,7 +129,7 @@ await VolumeManager.configureAudioSession({
 // Activate the session (async by default)
 await VolumeManager.activateAudioSession(); 
 
-// Deactive session when complete (async by default)
+// Deactivate session when complete (async by default)
 await VolumeManager.deactivateAudioSession(); 
 
 ```
@@ -352,12 +352,11 @@ Adds a listener that will be called when the device's volume changes.
 
 ## iOS-only Methods
 
-#### **`activateAudioSession({ restorePreviousSessionOnDeactivation: boolean, runAsync: true}): Promise<void>`**
+#### **`activateAudioSession({ runAsync: true}): Promise<void>`**
 
 Activates the audio session. 
 
 - **Parameters**:
-  - `restorePreviousSessionOnDeactivation` (`boolean`): Setting this to true reactivates any sessions that were interrupted by this one.
   - `runAsync` (`boolean`): If `true`, the action is performed asynchronously.
 
 <br/>
@@ -369,11 +368,12 @@ Activates the audio session.
   ```
 
 
-#### **`deactivateAudioSession({ runAsync: true}): Promise<void>`**
+#### **`deactivateAudioSession({ restorePreviousSessionOnDeactivation: boolean, runAsync: true}): Promise<void>`**
 
 Deactivates the audio session.
 
 - **Parameters**:
+  - `restorePreviousSessionOnDeactivation` (`boolean`): Setting this to true reactivates any sessions that were interrupted by this one.
   - `runAsync` (`boolean`): If `true`, the action is performed asynchronously.
 
 <br/>

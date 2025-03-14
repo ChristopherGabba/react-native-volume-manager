@@ -113,13 +113,11 @@ export async function setRingerMode(
  */
 export async function activateAudioSession(
   options: AVAudioSessionActivationOptions = {
-    restorePreviousSessionOnDeactivation: true,
     runAsync: true,
   }
 ): Promise<void> {
   if (!isAndroid) {
     return VolumeManagerNativeModule.activateAudioSession(
-      options.restorePreviousSessionOnDeactivation,
       options.runAsync
     );
   }
@@ -135,7 +133,10 @@ export async function deactivateAudioSession(
   options: AVAudioSessionDeactivationOptions = { runAsync: true }
 ): Promise<void> {
   if (!isAndroid) {
-    return VolumeManagerNativeModule.deactivateAudioSession(options.runAsync);
+    return VolumeManagerNativeModule.deactivateAudioSession(
+      options.restorePreviousSessionOnDeactivation,
+      options.runAsync
+    );
   }
   return undefined;
 }

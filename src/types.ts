@@ -30,12 +30,6 @@ export type setCheckIntervalType = (newInterval: number) => void;
 
 export type AVAudioSessionActivationOptions = {
   /**
-   * Restores the previous AVAudioSession when this one ends. For example, if you are listening to music in the backgorund
-   * and this audio session starts, it will pause the music. When you call `inactivateAudioSession` it will play the music again.
-   * @default true
-   */
-  restorePreviousSessionOnDeactivation?: boolean;
-  /**
    * Run the function asyncronously (non blocking).
    * @default true
    */
@@ -43,6 +37,12 @@ export type AVAudioSessionActivationOptions = {
 };
 
 export type AVAudioSessionDeactivationOptions = {
+  /**
+   * Restores the previous AVAudioSession when this one ends. For example, if you are listening to music in the backgorund
+   * and this audio session starts, it will pause the music. When you call `inactivateAudioSession` it will play the music again.
+   * @default true
+   */
+  restorePreviousSessionOnDeactivation?: boolean;
   /**
    * Run the function asyncronously (non blocking).
    * @default true

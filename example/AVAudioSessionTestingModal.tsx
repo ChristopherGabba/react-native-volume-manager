@@ -32,10 +32,10 @@ type TestConfiguration = {
 const testConfigurations: TestConfiguration[] = [
   {
     key: 0,
-    title: 'Movie Playback And Mixing',
+    title: 'Ambient - Default',
     configuration: {
-      category: AVAudioSessionCategory.Playback,
-      mode: AVAudioSessionMode.MoviePlayback,
+      category: AVAudioSessionCategory.Ambient,
+      mode: AVAudioSessionMode.Default,
       categoryOptions: [AVAudioSessionCategoryOptions.AllowBluetooth],
       prefersNoInterruptionFromSystemAlerts: true,
     },
@@ -69,6 +69,16 @@ const testConfigurations: TestConfiguration[] = [
     configuration: {
       category: AVAudioSessionCategory.PlayAndRecord,
       mode: AVAudioSessionMode.VideoRecording,
+      categoryOptions: [AVAudioSessionCategoryOptions.AllowBluetooth],
+      prefersNoInterruptionFromSystemAlerts: true,
+    },
+  },
+  {
+    key: 4,
+    title: 'Movie Playback And Mixing',
+    configuration: {
+      category: AVAudioSessionCategory.Playback,
+      mode: AVAudioSessionMode.MoviePlayback,
       categoryOptions: [AVAudioSessionCategoryOptions.AllowBluetooth],
       prefersNoInterruptionFromSystemAlerts: true,
     },
@@ -115,11 +125,16 @@ export const AVAudioSessionTestingModal = (props: AudioModalProps) => {
   });
 
   function activateAudioSession() {
-    VolumeManager.activateAudioSession();
+    VolumeManager.activateAudioSession({
+      runAsync: true
+    });
   }
 
   function terminateAudioSession() {
-    VolumeManager.deactivateAudioSession();
+    VolumeManager.deactivateAudioSession({
+      restorePreviousSessionOnDeactivation: true,
+      runAsync: true
+    });
   }
 
   return (
@@ -140,6 +155,7 @@ export const AVAudioSessionTestingModal = (props: AudioModalProps) => {
               valueField="configuration"
               value={selectedConfig}
               onChange={(item: TestConfiguration) => {
+                setSelectedConfig(item);
                 runConfigurationWithLogging(() =>
                   configureAudioSession(item.configuration)
                 );
