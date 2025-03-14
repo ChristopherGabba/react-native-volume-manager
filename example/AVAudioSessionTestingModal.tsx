@@ -140,6 +140,7 @@ export const AVAudioSessionTestingModal = (props: AudioModalProps) => {
               valueField="configuration"
               value={selectedConfig}
               onChange={(item: TestConfiguration) => {
+                setSelectedConfig(item)
                 runConfigurationWithLogging(() =>
                   configureAudioSession(item.configuration)
                 );
