@@ -416,14 +416,13 @@ RCT_EXPORT_METHOD(configureAudioSession:(NSString *)categoryName
         return;
       }
 
-    // Set additional preferences with version checks
-    if (@available(iOS 14.0, *)) {
-      [session setPrefersNoInterruptionsFromSystemAlerts:prefersNoInterruptionFromSystemAlerts error:&error];
-      if (error) {
+
+    [session setPrefersNoInterruptionsFromSystemAlerts:prefersNoInterruptionFromSystemAlerts error:&error];
+    if (error) {
         NSLog(@"Failed to set prefersNoInterruptionsFromSystemAlerts: %@", error);
         error = nil;
-      }
     }
+    
     
     if (@available(iOS 17.0, *)) {
       [session setPrefersInterruptionOnRouteDisconnect:prefersInterruptionOnRouteDisconnect error:&error];
@@ -433,12 +432,11 @@ RCT_EXPORT_METHOD(configureAudioSession:(NSString *)categoryName
       }
     }
     
-    if (@available(iOS 13.0, *)) {
-      [session setAllowHapticsAndSystemSoundsDuringRecording:allowHapticsAndSystemSoundsDuringRecording error:&error];
-      if (error) {
-        NSLog(@"Failed to set allowHapticsAndSystemSoundsDuringRecording: %@", error);
-      }
+    [session setAllowHapticsAndSystemSoundsDuringRecording:allowHapticsAndSystemSoundsDuringRecording error:&error];
+    if (error) {
+      NSLog(@"Failed to set allowHapticsAndSystemSoundsDuringRecording: %@", error);
     }
+
   } else {
      NSLog(@"Did not provide any category to set:");
   }
