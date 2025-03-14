@@ -16,10 +16,9 @@ import {
   useRingerMode,
   RINGER_MODE,
   RingerSilentStatus,
-  AVAudioSessionCategory,
-  AVAudioSessionMode,
 } from 'react-native-volume-manager';
 import Slider from '@react-native-community/slider';
+import { AVAudioSessionTestingModal } from './AVAudioSessionTestingModal';
 
 const modeText = {
   [RINGER_MODE.silent]: 'Silent',
@@ -31,58 +30,20 @@ function nullishBooleanToString(value: boolean | undefined) {
   return value === undefined ? 'unset' : value ? 'YES' : 'NO';
 }
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export default function App() {
   const [currentSystemVolume, setReportedSystemVolume] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean | undefined>();
   const [initialQuery, setInitialQuery] = useState<boolean | undefined>();
   const [ringerStatus, setRingerStatus] = useState<RingerSilentStatus>();
   const [hideUI, setHideUI] = useState<boolean>(false);
+  const [showAVAudioSessionModal, setShowAVAudioSessionModal] =
+    useState<boolean>(false);
+
   const volumeChangedByListener = useRef(true);
 
   useEffect(() => {
     VolumeManager.showNativeVolumeUI({ enabled: !hideUI });
   }, [hideUI]);
-
-  useEffect(() => {
-    (async function testAudioSession() {
-      // A good way to test if this is working is to play some song from spotify or podcasts
-      // Run the app, right when the app opens, it will set the audio session, that audio session will quiet
-      // For 5 seconds, then return when the session ends.
-      try {
-        const initialStatus = await VolumeManager.getAudioSessionStatus();
-        console.log(
-          'AVAudioSessionStatus Before Setting:',
-          JSON.stringify(initialStatus, null, 4)
-        );
-
-        await VolumeManager.configureAudioSession({
-          category: AVAudioSessionCategory.Playback,
-          mode: AVAudioSessionMode.MoviePlayback,
-        });
-
-        const endingStatus = await VolumeManager.getAudioSessionStatus();
-
-        console.log(
-          'AVAudioSessionStatus After Setting',
-          JSON.stringify(endingStatus, null, 4)
-        );
-        /**
-         * Activate session to test if the background mutes or not.
-         */
-        await VolumeManager.activateAudioSession();
-
-        await delay(5000);
-        /**
-         * De-activate session after five seconds to see if audio restores
-         */
-        await VolumeManager.deactivateAudioSession();
-      } catch (error) {
-        console.log('Error testing audioSession functions', error);
-      }
-    })();
-  }, []);
 
   useEffect(() => {
     VolumeManager.getVolume().then((result) => {
@@ -187,6 +148,12 @@ export default function App() {
                   : 'Unsupported on Android'}
               </Text>
             </View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setShowAVAudioSessionModal(true)}
+            >
+              <Text style={styles.buttonText}>Test iOS AudioSession</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.card}>
@@ -257,6 +224,10 @@ export default function App() {
             </View>
           </View>
         </View>
+        <AVAudioSessionTestingModal
+          visible={showAVAudioSessionModal}
+          onCloseButtonPressed={() => setShowAVAudioSessionModal(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -266,6 +237,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#F5F5F5',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subHeaderTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textDecorationStyle: 'dotted',
+    marginBottom: 10,
   },
   card: {
     padding: 10,

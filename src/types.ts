@@ -40,7 +40,7 @@ export type AVAudioSessionActivationOptions = {
    * @default true
    */
   runAsync?: boolean;
-}
+};
 
 export type AVAudioSessionDeactivationOptions = {
   /**
@@ -48,7 +48,7 @@ export type AVAudioSessionDeactivationOptions = {
    * @default true
    */
   runAsync?: boolean;
-}
+};
 
 export enum AVAudioSessionCategory {
   /**
@@ -341,271 +341,33 @@ export type AVAudioSessionCompatibleModes = {
  */
 export type AVAudioSessionCompatibleCategoryOptions = {
   Ambient:
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [AVAudioSessionCategoryOptions.MixWithOthers];
+    | AVAudioSessionCategoryOptions.MixWithOthers
+    | AVAudioSessionCategoryOptions.AllowBluetoothA2DP;
 
-  SoloAmbient: [AVAudioSessionCategoryOptions.AllowBluetoothA2DP] | [];
+  SoloAmbient: AVAudioSessionCategoryOptions.AllowBluetoothA2DP;
 
   Playback:
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [AVAudioSessionCategoryOptions.MixWithOthers]
-    | [AVAudioSessionCategoryOptions.AllowBluetoothA2DP]
-    | [];
+    | AVAudioSessionCategoryOptions.MixWithOthers
+    | AVAudioSessionCategoryOptions.DuckOthers
+    | AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
+    | AVAudioSessionCategoryOptions.AllowBluetoothA2DP;
 
-  Record: [AVAudioSessionCategoryOptions.AllowBluetooth] | [];
+  Record: AVAudioSessionCategoryOptions.AllowBluetooth;
 
   PlayAndRecord:
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowBluetooth
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [AVAudioSessionCategoryOptions.MixWithOthers]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetooth,
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP
-      ]
-    | [AVAudioSessionCategoryOptions.AllowBluetooth]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker,
-        AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption
-      ]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay,
-        AVAudioSessionCategoryOptions.DefaultToSpeaker
-      ]
-    | [
-        AVAudioSessionCategoryOptions.AllowBluetoothA2DP,
-        AVAudioSessionCategoryOptions.AllowAirPlay
-      ]
-    | [AVAudioSessionCategoryOptions.AllowBluetoothA2DP]
-    | [AVAudioSessionCategoryOptions.AllowAirPlay]
-    | [];
+    | AVAudioSessionCategoryOptions.MixWithOthers
+    | AVAudioSessionCategoryOptions.DuckOthers
+    | AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
+    | AVAudioSessionCategoryOptions.AllowBluetooth
+    | AVAudioSessionCategoryOptions.AllowBluetoothA2DP
+    | AVAudioSessionCategoryOptions.AllowAirPlay
+    | AVAudioSessionCategoryOptions.DefaultToSpeaker
+    | AVAudioSessionCategoryOptions.OverrideMutedMicrophoneInterruption;
 
   MultiRoute:
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.DuckOthers
-      ]
-    | [
-        AVAudioSessionCategoryOptions.MixWithOthers,
-        AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers
-      ]
-    | [AVAudioSessionCategoryOptions.MixWithOthers]
-    | [];
+    | AVAudioSessionCategoryOptions.MixWithOthers
+    | AVAudioSessionCategoryOptions.DuckOthers
+    | AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers;
 };
 
 export type AVAudioSessionStatus = {

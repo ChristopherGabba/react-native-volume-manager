@@ -204,7 +204,7 @@ export async function configureAudioSession<
    *
    * @default [AVAudioSessionCategoryOptions.MixWithOthers,AVAudioSessionCategoryOptions.AllowBluetooth]
    */
-  categoryOptions?: N;
+  categoryOptions?: N[];
   /**
    * If true, prefers no interruptions from system alerts (iOS 14.0+).
    * @default true
