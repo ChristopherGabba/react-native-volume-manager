@@ -139,7 +139,7 @@ export const AVAudioSessionTestingModal = (props: AudioModalProps) => {
 
   return (
     <Modal
-      visible={visible}
+      visible={visible} 
       style={styles.modal}
       presentationStyle="overFullScreen"
     >
