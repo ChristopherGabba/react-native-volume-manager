@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import {
   AVAudioSessionCategory,
-  AVAudioSessionMode,
   EmitterSubscriptionNoop,
   RingMuteSwitchEventCallback,
   RingerEventCallback,
@@ -105,41 +104,6 @@ export async function setRingerMode(
   }
 
   return VolumeManagerNativeModule.setRingerMode(mode);
-}
-
-/**
- *  * @deprecated instead use:
- * ```tsx
- *   await configureAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await activateAudioSession()
- * ```
- * iOS only. Enables or disables the audio session. When enabled, the session's category is set to ambient, allowing the audio from this session to mix with other audio currently playing on the device.
- * @param {boolean} [enabled=true] - Whether to enable or disable the audio session.
- * @param {boolean} [async=true] - Whether to perform the operation asynchronously. When set to true, this function will not block the UI thread.
- * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error.
- */
-export async function enable(
-  enabled: boolean = true,
-  async: boolean = true
-): Promise<void> {
-  return VolumeManagerNativeModule.enable(enabled, async);
-}
-
-/**
- * @deprecated replaced with `activateAudioSession` and `deactivateAudioSession`
- * iOS only. Activates or deactivates the audio session. Does not change the audio session's category. When the session is deactivated, other audio sessions that had been interrupted by this one are reactivated and notified.
- * @param {boolean} [value=true] - Whether to activate or deactivate the audio session.
- * @param {boolean} [async=true] - Whether to perform the operation asynchronously. When set to true, this function will not block the JavaScript thread.
- * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
- */
-export async function setActive(
-  value: boolean = true,
-  async: boolean = true
-): Promise<void> {
-  if (!isAndroid) {
-    return VolumeManagerNativeModule.setActive(value, async);
-  }
-  return undefined;
 }
 
 /**
@@ -291,59 +255,6 @@ export const getAudioSessionStatus = (): Promise<
     );
   });
 };
-
-/**
- * * @deprecated Use `configureAudioSession` instead.
- *
- * Sets the audio session category. iOS only.
- * @param {AVAudioSessionCategory} value - The category to set
- * @param {boolean} [mixWithOthers=false] - Allow audio to mix with others
- * @returns {Promise<void>} - Resolves when the operation has finished
- */
-export async function setCategory(
-  value: AVAudioSessionCategory,
-  mixWithOthers: boolean = false
-): Promise<void> {
-  if (!isAndroid) {
-    return VolumeManagerNativeModule.setCategory(value, mixWithOthers);
-  }
-  return undefined;
-}
-
-/**
- * * @deprecated Use `configureAudioSession` instead.
- *
- * Sets the audio session mode. iOS only.
- * @param {AVAudioSessionMode} value - The mode to set
- * @returns {Promise<void>} - Resolves when the operation has finished
- */
-export async function setMode(value: AVAudioSessionMode): Promise<void> {
-  if (!isAndroid) {
-    return VolumeManagerNativeModule.setMode(value);
-  }
-  return undefined;
-}
-
-/**
- * @deprecated instead use:
- * ```tsx
- *   await configureAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await activateAudioSession()
- * ```
- *
- * Enables or disables the VolumeManager in silent mode. iOS only.
- * @param {boolean} [enabled=true] - Enable or disable the VolumeManager in silent mode
- * @returns {Promise<void>} - Resolves when the operation has finished
- */
-export async function enableInSilenceMode(
-  enabled: boolean = true
-): Promise<void> {
-  if (isAndroid) {
-    return undefined;
-  }
-
-  return VolumeManagerNativeModule.enableInSilenceMode(enabled);
-}
 
 /**
  * Checks if Do Not Disturb access is granted. Android only.
@@ -505,15 +416,10 @@ export const VolumeManager = {
   setRingerMode,
   checkDndAccess,
   requestDndAccess,
-  enable,
   activateAudioSession,
   deactivateAudioSession,
   configureAudioSession,
   getAudioSessionStatus,
-  setActive,
-  setCategory,
-  setMode,
-  enableInSilenceMode,
 };
 
 export default VolumeManager;

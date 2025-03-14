@@ -188,19 +188,13 @@ public class VolumeManagerModule extends ReactContextBaseJavaModule implements A
     return NAME;
   }
 
-  // Keep: Required no-op methods for iOS compatibility
-  @ReactMethod
-  public void enable(final Boolean enabled, final Boolean async) {
-    // no op
-  }
-
   @ReactMethod
   public void activateAudioSession(final Boolean restorePreviousSessionOnDeactivation, final Boolean runAsync) {
     // no op
   }
 
   @ReactMethod
-  public void setCategory(final String category, final Boolean mixWithOthers) {
+  public void deactivateAudioSession(final Boolean runAsync) {
     // no op
   }
 

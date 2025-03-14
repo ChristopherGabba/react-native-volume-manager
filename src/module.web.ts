@@ -1,6 +1,5 @@
 import type {
   AVAudioSessionCategory,
-  AVAudioSessionMode,
   EmitterSubscriptionNoop,
   RingMuteSwitchEventCallback,
   RingerEventCallback,
@@ -49,35 +48,6 @@ export async function setRingerMode(
   return undefined;
 }
 
-export async function enable(
-  _enabled: boolean = true,
-  _async: boolean = true
-): Promise<void> {
-  warnOnWeb();
-  return undefined;
-}
-
-export async function setActive(
-  _value: boolean = true,
-  _async: boolean = true
-): Promise<void> {
-  warnOnWeb();
-  return undefined;
-}
-
-export async function setCategory(
-  _value: AVAudioSessionCategory,
-  _mixWithOthers: boolean = false
-): Promise<void> {
-  warnOnWeb();
-  return undefined;
-}
-
-export async function setMode(_value: AVAudioSessionMode): Promise<void> {
-  warnOnWeb();
-  return undefined;
-}
-
 export async function activateAudioSession({}: {
   restorePreviousSessionOnDeactivation: boolean;
   runAsync: boolean;
@@ -113,13 +83,6 @@ export async function configureAudioSession<
 export async function getAudioSessionStatus(): Promise<
   AVAudioSessionStatus | undefined
 > {
-  warnOnWeb();
-  return undefined;
-}
-
-export async function enableInSilenceMode(
-  _enabled: boolean = true
-): Promise<void> {
   warnOnWeb();
   return undefined;
 }
@@ -206,11 +169,6 @@ export const VolumeManager = {
   setRingerMode,
   checkDndAccess,
   requestDndAccess,
-  enable,
-  setActive,
-  setCategory,
-  setMode,
-  enableInSilenceMode,
 };
 
 export default VolumeManager;
