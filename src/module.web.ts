@@ -49,7 +49,6 @@ export async function setRingerMode(
 }
 
 export async function activateAudioSession({}: {
-  restorePreviousSessionOnDeactivation: boolean;
   runAsync: boolean;
 }): Promise<void> {
   warnOnWeb();
@@ -57,6 +56,7 @@ export async function activateAudioSession({}: {
 }
 
 export async function deactivateAudioSession({}: {
+  restorePreviousSessionOnDeactivation: boolean;
   runAsync: boolean;
 }): Promise<void> {
   warnOnWeb();
