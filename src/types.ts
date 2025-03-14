@@ -33,7 +33,7 @@ export type AVAudioSessionActivationOptions = {
    * Run the function asyncronously (non blocking).
    * @default true
    */
-  runAsync: boolean;
+  runAsync?: boolean;
 };
 
 export type AVAudioSessionDeactivationOptions = {
@@ -42,12 +42,12 @@ export type AVAudioSessionDeactivationOptions = {
    * and this audio session starts, it will pause the music. When you call `inactivateAudioSession` it will play the music again.
    * @default true
    */
-  restorePreviousSessionOnDeactivation: boolean;
+  restorePreviousSessionOnDeactivation?: boolean;
   /**
    * Run the function asyncronously (non blocking).
    * @default true
    */
-  runAsync: boolean;
+  runAsync?: boolean;
 };
 
 export enum AVAudioSessionCategory {
