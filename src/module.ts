@@ -112,12 +112,16 @@ export async function setRingerMode(
  * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
  */
 export async function activateAudioSession(
-  options: AVAudioSessionActivationOptions = {
-    runAsync: true,
-  }
+  options?: AVAudioSessionActivationOptions
 ): Promise<void> {
+
+  const finalOptions: AVAudioSessionActivationOptions = {
+    runAsync: true,
+    ...options,
+  };
+  
   if (!isAndroid) {
-    return VolumeManagerNativeModule.activateAudioSession(options.runAsync);
+    return VolumeManagerNativeModule.activateAudioSession(finalOptions.runAsync);
   }
   return undefined;
 }
@@ -128,15 +132,19 @@ export async function activateAudioSession(
  * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
  */
 export async function deactivateAudioSession(
-  options: AVAudioSessionDeactivationOptions = {
+  options?: AVAudioSessionDeactivationOptions
+): Promise<void> {
+
+  const finalOptions: AVAudioSessionDeactivationOptions = {
     restorePreviousSessionOnDeactivation: true,
     runAsync: true,
-  }
-): Promise<void> {
+    ...options,
+  };
+
   if (!isAndroid) {
     return VolumeManagerNativeModule.deactivateAudioSession(
-      options.restorePreviousSessionOnDeactivation,
-      options.runAsync
+      finalOptions.restorePreviousSessionOnDeactivation,
+      finalOptions.runAsync
     );
   }
   return undefined;
