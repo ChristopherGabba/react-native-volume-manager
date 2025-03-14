@@ -238,60 +238,54 @@ RCT_EXPORT_METHOD(getVolume:(RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(activateAudioSession:(BOOL)restorePreviousSessionOnDeactivation
                                         async:(BOOL)async) {
   
-  AVAudioSessionSetActiveOptions options = 0;
-  if (restorePreviousSessionOnDeactivation) {
-    options = AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation;
-  }
+    AVAudioSessionSetActiveOptions options = 0;
+    if (restorePreviousSessionOnDeactivation) {
+        options |= AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation;
+    }
   
-if (async) {
-    dispatch_async(
-                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                     AVAudioSession *session = [AVAudioSession sharedInstance];
-                     NSError *error = nil;
-                     [session setActive:YES 
-                            withOptions:options 
-                                 error:&error];
-                     if (error) {
-                       NSLog(@"Error activating audio session: %@", error.localizedDescription);
-                     }
-                   });
-  } else {
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    [session setActive:YES 
-           withOptions:options 
-                error:&error];
-    if (error) {
-      NSLog(@"Error activating audio session: %@", error.localizedDescription);
+    void (^activateBlock)(void) = ^{
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        NSError *error = nil;
+        [session setActive:YES
+               withOptions:options
+                     error:&error];
+        if (error) {
+            NSLog(@"Error activating audio session: %@", error.localizedDescription);
+        }
+    };
+
+    if (async) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), activateBlock);
+    } else {
+        activateBlock();
     }
-  }
 }
 
-RCT_EXPORT_METHOD(deactivateAudioSession:(BOOL)async) {
-  if (async) {
-    dispatch_async(
-                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                     AVAudioSession *session = [AVAudioSession sharedInstance];
-                     NSError *error = nil;
-                     [session setActive:NO 
-                            withOptions:0 
-                                 error:&error];
-                     if (error) {
-                       NSLog(@"Error deactivating audio session: %@", error.localizedDescription);
-                     }
-                   });
-  } else {
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    [session setActive:NO 
-           withOptions:0 
-                error:&error];
-    if (error) {
-      NSLog(@"Error deactivating audio session: %@", error.localizedDescription);
+RCT_EXPORT_METHOD(deactivateAudioSession:(BOOL)restorePreviousSessionOnDeactivation
+                                        async:(BOOL)async) {
+  
+    AVAudioSessionSetActiveOptions options = 0;
+    if (restorePreviousSessionOnDeactivation) {
+        options |= AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation;
     }
-  }
-}
+  
+    void (^deactivateBlock)(void) = ^{
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        NSError *error = nil;
+        [session setActive:NO
+               withOptions:options
+                     error:&error];
+        if (error) {
+            NSLog(@"Error activating audio session: %@", error.localizedDescription);
+        }
+    };
 
+    if (async) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), deactivateBlock);
+    } else {
+        deactivateBlock();
+    }
+}
 RCT_EXPORT_METHOD(configureAudioSession:(NSString *)categoryName
                   mode:(NSString *)modeName
                   policy:(NSString *)policyName
@@ -300,111 +294,148 @@ RCT_EXPORT_METHOD(configureAudioSession:(NSString *)categoryName
                   prefersInterruptionOnRouteDisconnect:(BOOL)prefersInterruptionOnRouteDisconnect
                   allowHapticsAndSystemSoundsDuringRecording:(BOOL)allowHapticsAndSystemSoundsDuringRecording) {
 
-  AVAudioSession *session = [AVAudioSession sharedInstance];
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    
+    NSString *category = nil;
+    if ([categoryName isEqualToString:@"Ambient"]) {
+        category = AVAudioSessionCategoryAmbient;
+    } else if ([categoryName isEqualToString:@"SoloAmbient"]) {
+        category = AVAudioSessionCategorySoloAmbient;
+    } else if ([categoryName isEqualToString:@"Playback"]) {
+        category = AVAudioSessionCategoryPlayback;
+    } else if ([categoryName isEqualToString:@"Record"]) {
+        category = AVAudioSessionCategoryRecord;
+    } else if ([categoryName isEqualToString:@"PlayAndRecord"]) {
+        category = AVAudioSessionCategoryPlayAndRecord;
+    } else if ([categoryName isEqualToString:@"MultiRoute"]) {
+        category = AVAudioSessionCategoryMultiRoute;
+    }
+
+    NSString *mode = nil;
+    BOOL hasMode = NO;
+    if ([modeName isEqualToString:@"Default"]) {
+        mode = AVAudioSessionModeDefault;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"VoiceChat"]) {
+        mode = AVAudioSessionModeVoiceChat;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"VideoChat"]) {
+        mode = AVAudioSessionModeVideoChat;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"GameChat"]) {
+        mode = AVAudioSessionModeGameChat;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"VideoRecording"]) {
+        mode = AVAudioSessionModeVideoRecording;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"Measurement"]) {
+        mode = AVAudioSessionModeMeasurement;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"MoviePlayback"]) {
+        mode = AVAudioSessionModeMoviePlayback;
+        hasMode = YES;
+    } else if ([modeName isEqualToString:@"SpokenAudio"]) {
+        mode = AVAudioSessionModeSpokenAudio;
+        hasMode = YES;
+    }
+
+    AVAudioSessionRouteSharingPolicy policy = AVAudioSessionRouteSharingPolicyDefault;
+    BOOL hasPolicy = NO;
+    if ([policyName isEqualToString:@"LongFormAudio"]) {
+        policy = AVAudioSessionRouteSharingPolicyLongFormAudio;
+        hasPolicy = YES;
+    } else if ([policyName isEqualToString:@"LongFormVideo"]) {
+        policy = AVAudioSessionRouteSharingPolicyLongFormVideo;
+        hasPolicy = YES;
+    } else if ([policyName isEqualToString:@"Independent"]) {
+        policy = AVAudioSessionRouteSharingPolicyIndependent;
+        hasPolicy = YES;
+    }
+
+    AVAudioSessionCategoryOptions options = 0;
+    BOOL hasOptions = NO;
+    for (NSString *optionName in optionsArray) {
+        if ([optionName isEqualToString:@"MixWithOthers"]) {
+            options |= AVAudioSessionCategoryOptionMixWithOthers;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"AllowBluetooth"]) {
+            options |= AVAudioSessionCategoryOptionAllowBluetooth;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"AllowBluetoothA2DP"]) {
+            options |= AVAudioSessionCategoryOptionAllowBluetoothA2DP;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"AllowAirPlay"]) {
+            options |= AVAudioSessionCategoryOptionAllowAirPlay;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"DuckOthers"]) {
+            options |= AVAudioSessionCategoryOptionDuckOthers;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"DefaultToSpeaker"]) {
+            options |= AVAudioSessionCategoryOptionDefaultToSpeaker;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"InterruptSpokenAudioAndMixWithOthers"]) {
+            options |= AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers;
+            hasOptions = YES;
+        } else if ([optionName isEqualToString:@"OverrideMutedMicrophoneInterruption"]) {
+            options |= AVAudioSessionCategoryOptionOverrideMutedMicrophoneInterruption;
+            hasOptions = YES;
+        }
+    }
+
+    NSError *error = nil;
+
+    if (category) {
   
-  NSString *category = nil;
-  if ([categoryName isEqualToString:@"Ambient"]) {
-    category = AVAudioSessionCategoryAmbient;
-  } else if ([categoryName isEqualToString:@"SoloAmbient"]) {
-    category = AVAudioSessionCategorySoloAmbient;
-  } else if ([categoryName isEqualToString:@"Playback"]) {
-    category = AVAudioSessionCategoryPlayback;
-  } else if ([categoryName isEqualToString:@"Record"]) {
-    category = AVAudioSessionCategoryRecord;
-  } else if ([categoryName isEqualToString:@"PlayAndRecord"]) {
-    category = AVAudioSessionCategoryPlayAndRecord;
-  } else if ([categoryName isEqualToString:@"MultiRoute"]) {
-    category = AVAudioSessionCategoryMultiRoute;
-  }
+        // Handle all combinations of mode, policy, and options
+        if (hasMode && hasPolicy && hasOptions) {
+            [session setCategory:category mode:mode routeSharingPolicy:policy options:options error:&error];
+        } else if (hasMode && hasPolicy) {
+            [session setCategory:category mode:mode routeSharingPolicy:policy options:0 error:&error];
+        } else if (hasMode && hasOptions) {
+            [session setCategory:category mode:mode routeSharingPolicy:AVAudioSessionRouteSharingPolicyDefault options:options error:&error];
+        } else if (hasPolicy && hasOptions) {
+            [session setCategory:category mode:AVAudioSessionModeDefault routeSharingPolicy:policy options:options error:&error];
+        } else if (hasMode) {
+            [session setCategory:category mode:mode routeSharingPolicy:AVAudioSessionRouteSharingPolicyDefault options:0 error:&error];
+        } else if (hasPolicy) {
+            [session setCategory:category mode:AVAudioSessionModeDefault routeSharingPolicy:policy options:0 error:&error];
+        } else if (hasOptions) {
+            [session setCategory:category mode:AVAudioSessionModeDefault options:options error:&error];
+        } else {
+            [session setCategory:category error:&error];
+        }
+        
+        if (error) {
+            NSLog(@"Failed to configure audio session: %@", error);
+            return;
+        }
 
-  NSString *mode = nil;
-  if ([modeName isEqualToString:@"Default"]) {
-    mode = AVAudioSessionModeDefault;
-  } else if ([modeName isEqualToString:@"VoiceChat"]) {
-    mode = AVAudioSessionModeVoiceChat;
-  } else if ([modeName isEqualToString:@"VideoChat"]) {
-    mode = AVAudioSessionModeVideoChat;
-  } else if ([modeName isEqualToString:@"GameChat"]) {
-    mode = AVAudioSessionModeGameChat;
-  } else if ([modeName isEqualToString:@"VideoRecording"]) {
-    mode = AVAudioSessionModeVideoRecording;
-  } else if ([modeName isEqualToString:@"Measurement"]) {
-    mode = AVAudioSessionModeMeasurement;
-  } else if ([modeName isEqualToString:@"MoviePlayback"]) {
-    mode = AVAudioSessionModeMoviePlayback;
-  } else if ([modeName isEqualToString:@"SpokenAudio"]) {
-    mode = AVAudioSessionModeSpokenAudio;
-  }
-
-// Handle policy (map NSString to AVAudioSessionRouteSharingPolicy)
-  AVAudioSessionRouteSharingPolicy policy = AVAudioSessionRouteSharingPolicyDefault;
-  if ([policyName isEqualToString:@"LongFormAudio"]) {
-    policy = AVAudioSessionRouteSharingPolicyLongFormAudio;
-  } else if ([policyName isEqualToString:@"LongFormVideo"]) {
-    policy = AVAudioSessionRouteSharingPolicyLongFormVideo;
-  } else if ([policyName isEqualToString:@"Independent"]) {
-    policy = AVAudioSessionRouteSharingPolicyIndependent;
-  }
-  // Handle options array
-  AVAudioSessionCategoryOptions options = 0;
-  for (NSString *optionName in optionsArray) {
-    if ([optionName isEqualToString:@"MixWithOthers"]) {
-      options |= AVAudioSessionCategoryOptionMixWithOthers;
-    } else if ([optionName isEqualToString:@"AllowBluetooth"]) {
-      options |= AVAudioSessionCategoryOptionAllowBluetooth;
-    } else if ([optionName isEqualToString:@"AllowBluetoothA2DP"]) {
-      options |= AVAudioSessionCategoryOptionAllowBluetoothA2DP;
-    } else if ([optionName isEqualToString:@"AllowAirPlay"]) {
-      options |= AVAudioSessionCategoryOptionAllowAirPlay;
-    } else if ([optionName isEqualToString:@"DuckOthers"]) {
-      options |= AVAudioSessionCategoryOptionDuckOthers;
-    } else if ([optionName isEqualToString:@"DefaultToSpeaker"]) {
-      options |= AVAudioSessionCategoryOptionDefaultToSpeaker;
-    } else if ([optionName isEqualToString:@"InterruptSpokenAudioAndMixWithOthers"]) {
-      options |= AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers;
-    }else if ([optionName isEqualToString:@"OverrideMutedMicrophoneInterruption"]) {
-      options |= AVAudioSessionCategoryOptionOverrideMutedMicrophoneInterruption;
+        [session setPrefersNoInterruptionsFromSystemAlerts:prefersNoInterruptionFromSystemAlerts error:&error];
+        if (error) {
+            NSLog(@"Failed to set prefersNoInterruptionsFromSystemAlerts: %@", error);
+            error = nil;
+        }
+        
+        if (@available(iOS 17.0, *)) {
+            [session setPrefersInterruptionOnRouteDisconnect:prefersInterruptionOnRouteDisconnect error:&error];
+            if (error) {
+                NSLog(@"Failed to set prefersInterruptionOnRouteDisconnect: %@", error);
+                error = nil;
+            }
+        }
+        
+        [session setAllowHapticsAndSystemSoundsDuringRecording:allowHapticsAndSystemSoundsDuringRecording error:&error];
+        if (error) {
+            NSLog(@"Failed to set allowHapticsAndSystemSoundsDuringRecording: %@", error);
+        }
+    } else {
+        if(hasMode) {
+          [session setMode:mode error:&error];
+        } else {
+          NSLog(@"Did not provide any category or mode to set:");
+        }
+       
     }
-  }
-
-  if (category) {
-
-      NSError *error = nil;
-     [session setCategory:category
-                     mode:mode ?: AVAudioSessionModeDefault
-       routeSharingPolicy:policy
-                  options:options
-                    error:&error];
-    
-      if (error) {
-        NSLog(@"Failed to configure audio session: %@", error);
-        return;
-      }
-
-
-    [session setPrefersNoInterruptionsFromSystemAlerts:prefersNoInterruptionFromSystemAlerts error:&error];
-    if (error) {
-        NSLog(@"Failed to set prefersNoInterruptionsFromSystemAlerts: %@", error);
-        error = nil;
-    }
-    
-    
-    if (@available(iOS 17.0, *)) {
-      [session setPrefersInterruptionOnRouteDisconnect:prefersInterruptionOnRouteDisconnect error:&error];
-      if (error) {
-        NSLog(@"Failed to set prefersInterruptionOnRouteDisconnect: %@", error);
-        error = nil;
-      }
-    }
-    
-    [session setAllowHapticsAndSystemSoundsDuringRecording:allowHapticsAndSystemSoundsDuringRecording error:&error];
-    if (error) {
-      NSLog(@"Failed to set allowHapticsAndSystemSoundsDuringRecording: %@", error);
-    }
-
-  } else {
-     NSLog(@"Did not provide any category to set:");
-  }
 }
 
 RCT_EXPORT_METHOD(getAudioSessionStatus:(RCTResponseSenderBlock)callback) {
