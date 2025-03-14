@@ -520,5 +520,3 @@ if (options & AVAudioSessionCategoryOptionOverrideMutedMicrophoneInterruption) {
     [audioSession setActive:YES error:nil];
   }
 }
-
-@end
