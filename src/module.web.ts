@@ -78,7 +78,7 @@ export async function setMode(_value: AVAudioSessionMode): Promise<void> {
   return undefined;
 }
 
-export async function activateAVAudioSession({}: {
+export async function activateAudioSession({}: {
   restorePreviousSessionOnDeactivation: boolean;
   runAsync: boolean;
 }): Promise<void> {
@@ -86,14 +86,14 @@ export async function activateAVAudioSession({}: {
   return undefined;
 }
 
-export async function deactivateAVAudioSession({}: {
+export async function deactivateAudioSession({}: {
   runAsync: boolean;
 }): Promise<void> {
   warnOnWeb();
   return undefined;
 }
 
-export async function configureAVAudioSession<
+export async function configureAudioSession<
   T extends AVAudioSessionCategory,
   M extends AVAudioSessionCompatibleModes[T],
   N extends AVAudioSessionCompatibleCategoryOptions[T]
@@ -110,7 +110,7 @@ export async function configureAVAudioSession<
   return undefined;
 }
 
-export async function getAVAudioSessionStatus(): Promise<
+export async function getAudioSessionStatus(): Promise<
   AVAudioSessionStatus | undefined
 > {
   warnOnWeb();

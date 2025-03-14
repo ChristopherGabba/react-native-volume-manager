@@ -270,7 +270,7 @@ RCT_EXPORT_METHOD(setActive:(BOOL)active async:(BOOL)async) {
   }
 }
 
-RCT_EXPORT_METHOD(activateAVAudioSession:(BOOL)restorePreviousSessionOnDeactivation
+RCT_EXPORT_METHOD(activateAudioSession:(BOOL)restorePreviousSessionOnDeactivation
                                         async:(BOOL)async) {
   
   AVAudioSessionSetActiveOptions options = 0;
@@ -302,7 +302,7 @@ if (async) {
   }
 }
 
-RCT_EXPORT_METHOD(deactivateAVAudioSession:(BOOL)async) {
+RCT_EXPORT_METHOD(deactivateAudioSession:(BOOL)async) {
   if (async) {
     dispatch_async(
                    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -327,7 +327,7 @@ RCT_EXPORT_METHOD(deactivateAVAudioSession:(BOOL)async) {
   }
 }
 
-RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
+RCT_EXPORT_METHOD(configureAudioSession:(NSString *)categoryName
                   mode:(NSString *)modeName
                   policy:(NSString *)policyName
                   options:(NSArray<NSString *> *)optionsArray
@@ -444,7 +444,7 @@ RCT_EXPORT_METHOD(configureAVAudioSession:(NSString *)categoryName
   }
 }
 
-RCT_EXPORT_METHOD(getAVAudioSessionStatus:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(getAudioSessionStatus:(RCTResponseSenderBlock)callback) {
 
   AVAudioSession *session = [AVAudioSession sharedInstance];
 

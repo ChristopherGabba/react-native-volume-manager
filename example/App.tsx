@@ -51,18 +51,18 @@ export default function App() {
       // Run the app, right when the app opens, it will set the audio session, that audio session will quiet
       // For 5 seconds, then return when the session ends.
       try {
-        const initialStatus = await VolumeManager.getAVAudioSessionStatus();
+        const initialStatus = await VolumeManager.getAudioSessionStatus();
         console.log(
           'AVAudioSessionStatus Before Setting:',
           JSON.stringify(initialStatus, null, 4)
         );
 
-        await VolumeManager.configureAVAudioSession({
+        await VolumeManager.configureAudioSession({
           category: AVAudioSessionCategory.Playback,
           mode: AVAudioSessionMode.MoviePlayback,
         });
 
-        const endingStatus = await VolumeManager.getAVAudioSessionStatus();
+        const endingStatus = await VolumeManager.getAudioSessionStatus();
 
         console.log(
           'AVAudioSessionStatus After Setting',
@@ -71,13 +71,13 @@ export default function App() {
         /**
          * Activate session to test if the background mutes or not.
          */
-        await VolumeManager.activateAVAudioSession();
+        await VolumeManager.activateAudioSession();
 
         await delay(5000);
         /**
          * De-activate session after five seconds to see if audio restores
          */
-        await VolumeManager.deactivateAVAudioSession();
+        await VolumeManager.deactivateAudioSession();
       } catch (error) {
         console.log('Error testing audioSession functions', error);
       }

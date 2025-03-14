@@ -100,7 +100,7 @@ import { VolumeManager } from 'react-native-volume-manager';
 // Configure the audio session for some specific use case
 
 // For recording a video with a camera 
-await VolumeManager.configureAVAudioSession({
+await VolumeManager.configureAudioSession({
     category: AVAudioSessionCategory.PlayAndRecord,
     mode: AVAudioSessionMode.VideoRecording,
     policy: AVAudioSessionPolicy.Default,
@@ -109,7 +109,7 @@ await VolumeManager.configureAVAudioSession({
 })
   
 // Or for controlling a video session
-await VolumeManager.configureAVAudioSession({
+await VolumeManager.configureAudioSession({
     category: AVAudioSessionCategory.Playback,
     mode: AVAudioSessionMode.MediaPlayback,
     policy: AVAudioSessionPolicy.Default,
@@ -119,7 +119,7 @@ await VolumeManager.configureAVAudioSession({
 
 // Or for enabling the audio session and ignoring the silent switch 
 // (note have to activate the session after configuration)
-await VolumeManager.configureAVAudioSession({
+await VolumeManager.configureAudioSession({
     category: AVAudioSessionCategory.Playback,
     mode: AVAudioSessionMode.Default,
     policy: AVAudioSessionPolicy.Default,
@@ -127,10 +127,10 @@ await VolumeManager.configureAVAudioSession({
 })
 
 // Activate the session (async by default)
-await VolumeManager.activateAVAudioSession(); 
+await VolumeManager.activateAudioSession(); 
 
 // Deactive session when complete (async by default)
-await VolumeManager.deactivateAVAudioSession(); 
+await VolumeManager.deactivateAudioSession(); 
 
 ```
 
@@ -352,7 +352,7 @@ Adds a listener that will be called when the device's volume changes.
 
 ## iOS-only Methods
 
-#### **`activateAVAudioSession({ restorePreviousSessionOnDeactivation: boolean, runAsync: true}): Promise<void>`**
+#### **`activateAudioSession({ restorePreviousSessionOnDeactivation: boolean, runAsync: true}): Promise<void>`**
 
 Activates the audio session. 
 
@@ -365,11 +365,11 @@ Activates the audio session.
 - **Example**:
   ```typescript
   // Activate audio session
-  await VolumeManager.activateAVAudioSession();
+  await VolumeManager.activateAudioSession();
   ```
 
 
-#### **`deactivateAVAudioSession({ runAsync: true}): Promise<void>`**
+#### **`deactivateAudioSession({ runAsync: true}): Promise<void>`**
 
 Deactivates the audio session.
 
@@ -381,11 +381,11 @@ Deactivates the audio session.
 - **Example**:
   ```typescript
   // Activate audio session
-  await VolumeManager.deactivateAVAudioSession();
+  await VolumeManager.deactivateAudioSession();
   ```
 
 
-#### **`configureAVAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, categoryOptions: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
+#### **`configureAudioSession({category: AVAudioSessionCategory, mode: AVAudioSessionMode, policy: AVAudioSessionRouteSharingPolicy, categoryOptions: AVAudioSessionCategoryOptions, prefersNoInterruptionFromSystemAlerts?: boolean, prefersInterruptionOnRouteDisconnect?: boolean, allowHapticsAndSystemSoundsDuringRecording?: boolean }): Promise<void>`**
 
 Configures the AVAudioSession category with compatible AVAudioSession modes and allows further customization of audio session properties.
 
@@ -407,7 +407,7 @@ Configures the AVAudioSession category with compatible AVAudioSession modes and 
 
 - **Example**:
   ```typescript
-  await VolumeManager.configureAVAudioSession({
+  await VolumeManager.configureAudioSession({
     category: AVAudioSessionCategory.Playback,
     mode: AVAudioSessionMode.VideoRecording,
     policy: AVAudioSessionRouteSharingPolicy.Default,
@@ -415,7 +415,7 @@ Configures the AVAudioSession category with compatible AVAudioSession modes and 
   });
   ```
 
-#### **`getAVAudioSessionStatus(): Promise<AVAudioSessionStatus>`**
+#### **`getAudioSessionStatus(): Promise<AVAudioSessionStatus>`**
 
 Returns the current status of the AVAudioSession.
 
@@ -436,7 +436,7 @@ Returns the current status of the AVAudioSession.
     prefersNoInterruptionFromSystemAlerts,
     prefersInterruptionOnRouteDisconnect, 
     allowHapticsAndSystemSoundsDuringRecording
-  } = await VolumeManager.getAVAudioSessionStatus();
+  } = await VolumeManager.getAudioSessionStatus();
 
   console.log("Current AVAudioSessionCategory is", category)
   ```
@@ -531,7 +531,7 @@ Sets the category for the AVAudioSession in your iOS app. `mixWithOthers` is an 
 <br/>
 
 - **Description**:
-  Sets the audio session category, which determines how your app interacts with other audio. This method is deprecated and has been replaced with `configureAVAudioSession`.
+  Sets the audio session category, which determines how your app interacts with other audio. This method is deprecated and has been replaced with `configureAudioSession`.
 
 <br/>
 
@@ -550,7 +550,7 @@ Sets the mode for the AVAudioSession in your iOS app.
 <br/>
 
 - **Description**:
-  Sets the audio session mode. This method is deprecated and has been replaced with `configureAVAudioSession`.
+  Sets the audio session mode. This method is deprecated and has been replaced with `configureAudioSession`.
 
 <br/>
 

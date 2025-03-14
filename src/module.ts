@@ -110,8 +110,8 @@ export async function setRingerMode(
 /**
  *  * @deprecated instead use:
  * ```tsx
- *   await configureAVAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await activateAVAudioSession()
+ *   await configureAudioSession({category: AVAudioSessionCategory.Ambient })
+ *   await activateAudioSession()
  * ```
  * iOS only. Enables or disables the audio session. When enabled, the session's category is set to ambient, allowing the audio from this session to mix with other audio currently playing on the device.
  * @param {boolean} [enabled=true] - Whether to enable or disable the audio session.
@@ -126,7 +126,7 @@ export async function enable(
 }
 
 /**
- * @deprecated replaced with `activateAVAudioSession` and `deactivateAVAudioSession`
+ * @deprecated replaced with `activateAudioSession` and `deactivateAudioSession`
  * iOS only. Activates or deactivates the audio session. Does not change the audio session's category. When the session is deactivated, other audio sessions that had been interrupted by this one are reactivated and notified.
  * @param {boolean} [value=true] - Whether to activate or deactivate the audio session.
  * @param {boolean} [async=true] - Whether to perform the operation asynchronously. When set to true, this function will not block the JavaScript thread.
@@ -147,14 +147,14 @@ export async function setActive(
  * @platform iOS
  * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
  */
-export async function activateAVAudioSession(
+export async function activateAudioSession(
   options: AVAudioSessionActivationOptions = {
     restorePreviousSessionOnDeactivation: true,
     runAsync: true,
   }
 ): Promise<void> {
   if (!isAndroid) {
-    return VolumeManagerNativeModule.activateAVAudioSession(
+    return VolumeManagerNativeModule.activateAudioSession(
       options.restorePreviousSessionOnDeactivation,
       options.runAsync
     );
@@ -167,11 +167,11 @@ export async function activateAVAudioSession(
  * @platform iOS
  * @returns {Promise<void>} - Resolves when the operation has finished. If an error occurs, it will be rejected with an instance of Error. On Android, this function returns undefined.
  */
-export async function deactivateAVAudioSession(
+export async function deactivateAudioSession(
   options: AVAudioSessionDeactivationOptions = { runAsync: true }
 ): Promise<void> {
   if (!isAndroid) {
-    return VolumeManagerNativeModule.deactivateAVAudioSession(options.runAsync);
+    return VolumeManagerNativeModule.deactivateAudioSession(options.runAsync);
   }
   return undefined;
 }
@@ -185,7 +185,7 @@ export async function deactivateAVAudioSession(
  * @example
  * ```tsx
  *   // For recording a video
- *   await configureAVAudioSession({
+ *   await configureAudioSession({
  *     category: AVAudioSessionCategory.PlayAndRecord,
  *     mode: AVAudioSessionMode.VideoRecording,
  *     policy: AVAudioSessionPolicy.Default,
@@ -194,7 +194,7 @@ export async function deactivateAVAudioSession(
  *   })
  *
  *  // For controlling a video session
- *   await configureAVAudioSession({
+ *   await configureAudioSession({
  *     category: AVAudioSessionCategory.Playback,
  *     mode: AVAudioSessionMode.MediaPlayback,
  *     policy: AVAudioSessionPolicy.Default,
@@ -203,7 +203,7 @@ export async function deactivateAVAudioSession(
  *   })
  * ```
  */
-export async function configureAVAudioSession<
+export async function configureAudioSession<
   T extends AVAudioSessionCategory,
   M extends AVAudioSessionCompatibleModes[T],
   N extends AVAudioSessionCompatibleCategoryOptions[T]
@@ -258,7 +258,7 @@ export async function configureAVAudioSession<
   allowHapticsAndSystemSoundsDuringRecording?: boolean;
 }): Promise<void> {
   if (!isAndroid) {
-    return VolumeManagerNativeModule.configureAVAudioSession(
+    return VolumeManagerNativeModule.configureAudioSession(
       category,
       mode,
       policy,
@@ -275,12 +275,12 @@ export async function configureAVAudioSession<
  * Retrieves the current AVAudioSession status from the native iOS side.
  * @returns {Promise<AVAudioSessionStatus>} A promise that resolves with the audio session status.
  */
-export const getAVAudioSessionStatus = (): Promise<
+export const getAudioSessionStatus = (): Promise<
   AVAudioSessionStatus | undefined
 > => {
   if (isAndroid) return Promise.resolve(undefined);
   return new Promise((resolve, reject) => {
-    VolumeManagerNativeModule.getAVAudioSessionStatus(
+    VolumeManagerNativeModule.getAudioSessionStatus(
       (error: Error, status: AVAudioSessionStatus) => {
         if (error) {
           reject(error);
@@ -293,7 +293,7 @@ export const getAVAudioSessionStatus = (): Promise<
 };
 
 /**
- * * @deprecated Use `configureAVAudioSession` instead.
+ * * @deprecated Use `configureAudioSession` instead.
  *
  * Sets the audio session category. iOS only.
  * @param {AVAudioSessionCategory} value - The category to set
@@ -311,7 +311,7 @@ export async function setCategory(
 }
 
 /**
- * * @deprecated Use `configureAVAudioSession` instead.
+ * * @deprecated Use `configureAudioSession` instead.
  *
  * Sets the audio session mode. iOS only.
  * @param {AVAudioSessionMode} value - The mode to set
@@ -327,8 +327,8 @@ export async function setMode(value: AVAudioSessionMode): Promise<void> {
 /**
  * @deprecated instead use:
  * ```tsx
- *   await configureAVAudioSession({category: AVAudioSessionCategory.Ambient })
- *   await activateAVAudioSession()
+ *   await configureAudioSession({category: AVAudioSessionCategory.Ambient })
+ *   await activateAudioSession()
  * ```
  *
  * Enables or disables the VolumeManager in silent mode. iOS only.
@@ -506,10 +506,10 @@ export const VolumeManager = {
   checkDndAccess,
   requestDndAccess,
   enable,
-  activateAVAudioSession,
-  deactivateAVAudioSession,
-  configureAVAudioSession,
-  getAVAudioSessionStatus,
+  activateAudioSession,
+  deactivateAudioSession,
+  configureAudioSession,
+  getAudioSessionStatus,
   setActive,
   setCategory,
   setMode,
